@@ -11,7 +11,7 @@ void main() {
   runApp(
     ChangeNotifierProvider(
       create: (context) => PersonagensRepository(),
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }

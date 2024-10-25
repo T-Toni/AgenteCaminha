@@ -14,6 +14,6 @@ class _LutaState extends State<Luta> {
    @override
   Widget build(BuildContext context) {
 
-    return Text('cum23');
+    return const Text('lutas');
   }
 }

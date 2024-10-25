@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:projeto/models/personagem.dart';
 
 class PersonagensRepository extends ChangeNotifier{
-  List<Personagem>_lista = [
+  final List<Personagem>_lista = [
       Personagem(nome: 'guerreiro'),
       Personagem(nome: 'curandeira'),
       Personagem(nome: 'mago'),
@@ -12,9 +12,9 @@ class PersonagensRepository extends ChangeNotifier{
   UnmodifiableListView<Personagem> get lista => UnmodifiableListView(_lista);
 
   saveAll(List<Personagem> personagens){
-    personagens.forEach((personagem){
+    for (var personagem in personagens) {
       if (!_lista.contains(personagem)) _lista.add(personagem);
-    });
+    }
     notifyListeners();
   }
 

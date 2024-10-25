@@ -16,11 +16,6 @@ class Menu extends StatefulWidget {
 class _MenuState extends State<Menu> {
   int _selectedIndex = 1;
 
-  void _incrementCounter() {
-    setState(() {
-    });
-  }
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -29,7 +24,7 @@ class _MenuState extends State<Menu> {
 
   void _onConfigTapped() {
     setState(() {
-      print("sexozinho");
+      //print("sa");
     });
   }
 
@@ -45,10 +40,10 @@ class _MenuState extends State<Menu> {
     return Scaffold( //tela
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        actions: [IconButton(onPressed: _onConfigTapped, icon: Icon(Icons.settings))],
+        actions: [IconButton(onPressed: _onConfigTapped, icon: const Icon(Icons.settings))],
         title: Text(
           widget.title,
-          style: TextStyle(
+          style: const TextStyle(
             color: Color.fromARGB(255, 24, 59, 92),
             fontSize: 20.0
             ),
@@ -78,7 +73,7 @@ class _MenuState extends State<Menu> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Color.fromARGB(255, 24, 59, 92),
+        selectedItemColor: const Color.fromARGB(255, 24, 59, 92),
         onTap: _onItemTapped,
       ),
     
