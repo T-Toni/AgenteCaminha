@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/models/personagem.dart';
-import 'package:projeto/pages/personagens_lista.dart';
 import 'package:projeto/repositories/personagens_repository.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +24,12 @@ class _HomeState extends State<Home> {
     return Text(nomes.toString());
   }
 
+  ListTile gerarTile(Personagem personagem){
+    return ListTile(
+      leading: Image(image: AssetImage(personagem.imagem)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     personagens = context.watch<PersonagensRepository>();
@@ -33,10 +38,13 @@ class _HomeState extends State<Home> {
 
     for (Personagem personagem in personagens.lista){
       if (personagem.checado == true){
-        personagensEscolhidos.add(personagem);  
+        personagensEscolhidos.add(personagem);
       }
     }
-
-    return gerarTextoEscolhidos(personagensEscolhidos);
+    
+    return Column( // Use Column para empilhar widgets
+      children: personagensEscolhidos.map((personagem) => gerarTile(personagem)).toList(),
+    );
+    //return gerarTextoEscolhidos(personagensEscolhidos);
   }
 }
