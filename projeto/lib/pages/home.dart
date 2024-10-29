@@ -15,19 +15,26 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   late PersonagensRepository personagens;
+  
+  List<int> estadosGrid = List<int>.filled(15, 0);
+  List<Personagem> marcados = [];
 
-  Text gerarTextoEscolhidos(List<Personagem> personagensEscolhidos){
-    List<String> nomes = [];
-    for (Personagem personagem in personagensEscolhidos){
-      nomes.add(personagem.nome);
+  void marcar(Personagem personagem, int index) {
+    setState(() {
+      estadosGrid[index] = (estadosGrid[index] + 1) % 2; // Alterna entre 0 e 1
+    });
+    marcados.add(personagem);
+    if (marcados.length == 2){
+      personagens.changePosition(marcados[0].posicao, marcados[1].posicao);
+      marcados.clear();
+      estadosGrid.fillRange(0, 14, 0);
     }
-    return Text(nomes.toString());
+    print(marcados);
   }
 
-  ListTile gerarTile(Personagem personagem){
-    return ListTile(
-      leading: Image(image: AssetImage(personagem.imagem)),
-    );
+  Personagem? getPersonagemNaPosicao(int posicao, List lista) {
+    final personagem = lista.where((p) => p.posicao == posicao);
+    return personagem.isNotEmpty ? personagem.first : null;
   }
 
   @override
@@ -42,9 +49,44 @@ class _HomeState extends State<Home> {
       }
     }
     
-    return Column( // Use Column para empilhar widgets
-      children: personagensEscolhidos.map((personagem) => gerarTile(personagem)).toList(),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end, // Posiciona a grid no final da tela
+      children: [
+        Container(
+          height: 250, // Altura da grid 3 linhas
+          padding: const EdgeInsets.all(8.0),
+          color: const Color.fromARGB(0, 224, 224, 224),
+          child: GridView.builder(
+            physics: const NeverScrollableScrollPhysics(), // Desativa o scroll
+            itemCount: 15, // 5x3 = 15 blocos
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 5, // 5 colunas de lado a lado
+              mainAxisSpacing: 8.0,
+              crossAxisSpacing: 8.0,
+            ),
+            itemBuilder: (context, index) {
+              final personagemDisplay = getPersonagemNaPosicao(index, personagensEscolhidos);
+              return GestureDetector(
+                onTap: () => personagemDisplay != null
+                          ? marcar(personagemDisplay, index)
+                          : null, // Altera o estado ao clicar
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: estadosGrid[index] == 0 ? Colors.white : Colors.blueAccent,
+                    borderRadius: BorderRadius.circular(8),
+                    image: personagemDisplay != null
+                          ? DecorationImage(
+                              image: AssetImage(personagemDisplay.imagem),
+                              fit: BoxFit.cover,
+                            )
+                          : null, // Aplica a imagem do personagem, se houver
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
-    //return gerarTextoEscolhidos(personagensEscolhidos);
   }
 }
