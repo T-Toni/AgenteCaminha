@@ -17,19 +17,28 @@ class _HomeState extends State<Home> {
   late PersonagensRepository personagens;
   
   List<int> estadosGrid = List<int>.filled(15, 0);
-  List<Personagem> marcados = [];
+  
+  Personagem? marcado;
 
-  void marcar(Personagem personagem, int index) {
+  List<Personagem> personagensEscolhidos = [];
+
+  void marcarPersonagem(Personagem personagem, int index) {
     setState(() {
       estadosGrid[index] = (estadosGrid[index] + 1) % 2; // Alterna entre 0 e 1
     });
-    marcados.add(personagem);
-    if (marcados.length == 2){
-      personagens.changePosition(marcados[0].posicao, marcados[1].posicao);
-      marcados.clear();
-      estadosGrid.fillRange(0, 14, 0);
+    marcado = personagem;
+  }
+
+  void trocarPosicao(int index){
+    if (marcado != null){
+      Personagem? personagemTroca = getPersonagemNaPosicao(index, personagensEscolhidos);
+      if (personagemTroca != null){
+        personagens.move(personagemTroca, marcado!.posicao);
+      }
+    personagens.move(marcado!, index);
+    marcado = null;
+    estadosGrid.fillRange(0, 15, 0);
     }
-    print(marcados);
   }
 
   Personagem? getPersonagemNaPosicao(int posicao, List lista) {
@@ -40,8 +49,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     personagens = context.watch<PersonagensRepository>();
-
-    List<Personagem> personagensEscolhidos = [];
 
     for (Personagem personagem in personagens.lista){
       if (personagem.checado == true){
@@ -67,9 +74,9 @@ class _HomeState extends State<Home> {
             itemBuilder: (context, index) {
               final personagemDisplay = getPersonagemNaPosicao(index, personagensEscolhidos);
               return GestureDetector(
-                onTap: () => personagemDisplay != null
-                          ? marcar(personagemDisplay, index)
-                          : null, // Altera o estado ao clicar
+                onTap: () => (personagemDisplay != null && marcado == null)
+                          ? marcarPersonagem(personagemDisplay, index)
+                          : trocarPosicao(index), // Altera o estado ao clicar
                 child: Container(
                   decoration: BoxDecoration(
                     color: estadosGrid[index] == 0 ? Colors.white : Colors.blueAccent,

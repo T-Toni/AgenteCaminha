@@ -4,9 +4,9 @@ import 'package:projeto/models/personagem.dart';
 
 class PersonagensRepository extends ChangeNotifier{
   final List<Personagem>_lista = [
-      Personagem(nome: 'guerreiro', imagem: 'assets/bola1.png', posicao:0),
-      Personagem(nome: 'curandeira', imagem: 'assets/bola2.png', posicao:1),
-      Personagem(nome: 'mago', imagem: 'assets/mago.png', posicao:2),
+      Personagem(nome: 'guerreiro', imagem: 'assets/bola1.png', posicao: 0),
+      Personagem(nome: 'curandeira', imagem: 'assets/bola2.png', posicao: 1),
+      Personagem(nome: 'mago', imagem: 'assets/mago.png', posicao: 2),
     ];
 
   UnmodifiableListView<Personagem> get lista => UnmodifiableListView(_lista);
@@ -23,19 +23,8 @@ class PersonagensRepository extends ChangeNotifier{
     notifyListeners();
   }
 
-  Personagem? getPersonagemNaPosicao(int posicao) {
-    final personagem = _lista.where((p) => p.posicao == posicao);
-    return personagem.isNotEmpty ? personagem.first : null;
-  }
-
-  changePosition(int posicao1, int posicao2){
-    final personagem1 = getPersonagemNaPosicao(posicao1);
-    final personagem2 = getPersonagemNaPosicao(posicao2);
-    
-    personagem1?.posicao = posicao2;
-    personagem2?.posicao = posicao1;
-
+  move(Personagem personagem, int posicao){
+    personagem.posicao = posicao;
     notifyListeners();
   }
-
 }
