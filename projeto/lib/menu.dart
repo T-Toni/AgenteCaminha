@@ -44,7 +44,7 @@ class _MenuState extends State<Menu> {
         title: Text(
           widget.title,
           style: const TextStyle(
-            color: Color.fromARGB(255, 24, 59, 92),
+            //color: Color.fromARGB(255, 24, 59, 92),
             fontSize: 20.0
             ),
           ), //tipo um this
@@ -59,21 +59,21 @@ class _MenuState extends State<Menu> {
           BottomNavigationBarItem(
             icon: Icon(Icons.backpack),
             label: 'Personagens',
-            backgroundColor: Color.fromARGB(255, 24, 59, 92),
+            //backgroundColor: Color.fromARGB(255, 24, 59, 92),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
-            backgroundColor: Color.fromARGB(255, 24, 59, 92),
+            //backgroundColor: Color.fromARGB(255, 24, 59, 92),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.handshake),
             label: 'Luta',
-            backgroundColor: Color.fromARGB(255, 24, 59, 92),
+            //backgroundColor: Color.fromARGB(255, 24, 59, 92),
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: const Color.fromARGB(255, 24, 59, 92),
+        //selectedItemColor: const Color.fromARGB(255, 24, 59, 92),
         onTap: _onItemTapped,
       ),
     

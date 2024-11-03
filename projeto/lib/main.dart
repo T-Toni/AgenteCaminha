@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/app.dart';
 import 'package:projeto/repositories/personagens_repository.dart';
+import 'package:projeto/repositories/usuario_repository';
 import 'package:provider/provider.dart';
 
 //void main() {
@@ -9,8 +10,15 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => PersonagensRepository(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => UsuariosRepository(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => PersonagensRepository(),
+        ),
+      ],
       child: const MyApp(),
     ),
   );

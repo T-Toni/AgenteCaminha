@@ -14,11 +14,11 @@ class _PersonagensState extends State<Personagens> {
   late PersonagensRepository personagens;
 
 
-  CheckboxListTile LI(Personagem personagem)
+  CheckboxListTile LI(Personagem personagem, ColorScheme colorScheme)
   {
     return CheckboxListTile(
-      title: Text(personagem.nome, style: const TextStyle(
-        color: Color.fromARGB(255, 44, 61, 77), // Defina a cor aqui também, se necessário
+      title: Text(personagem.nome, style: TextStyle(
+        //color: colorScheme.secondary, // Defina a cor aqui também, se necessário
         fontSize: 24, // Tamanho da fonte, ajuste como preferir
       ),
     ),
@@ -27,9 +27,9 @@ class _PersonagensState extends State<Personagens> {
       personagem.checado = newValue; // Atualiza o estado do personagem específicos
       personagens.saveAll([personagem]);  //salva os personagens escolhidos no "repositorio" de personagens escolhidos
     },
-    activeColor: const Color.fromARGB(255, 44, 61, 77),
-    checkColor: const Color.fromARGB(255, 215, 226, 255),
-    tileColor: const Color.fromARGB(255, 215, 226, 255),
+    //activeColor: colorScheme.primary,
+    //checkColor: colorScheme.primary,
+    //tileColor: colorScheme.primary,
     //subtitle: Text('a morte é certa'),
     );
   }
@@ -38,9 +38,10 @@ class _PersonagensState extends State<Personagens> {
   Widget build(BuildContext context) {
 
     personagens = context.watch<PersonagensRepository>();
+    final colorScheme = Theme.of(context).colorScheme;
     
     return Column( // Use Column para empilhar widgets
-      children: personagens.lista.map((personagem) => LI(personagem)).toList(),
+      children: personagens.lista.map((personagem) => LI(personagem, colorScheme)).toList(),
     );
 
   }
