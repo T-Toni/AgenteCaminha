@@ -15,26 +15,40 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   late PersonagensRepository personagens;
+  
+  List<int> estadosGrid = List<int>.filled(15, 0);
+  
+  Personagem? marcado;
 
-  Text gerarTextoEscolhidos(List<Personagem> personagensEscolhidos){
-    List<String> nomes = [];
-    for (Personagem personagem in personagensEscolhidos){
-      nomes.add(personagem.nome);
-    }
-    return Text(nomes.toString());
+  List<Personagem> personagensEscolhidos = [];
+
+  void marcarPersonagem(Personagem personagem, int index) {
+    setState(() {
+      estadosGrid[index] = (estadosGrid[index] + 1) % 2; // Alterna entre 0 e 1
+    });
+    marcado = personagem;
   }
 
-  ListTile gerarTile(Personagem personagem){
-    return ListTile(
-      leading: Image(image: AssetImage(personagem.imagem)),
-    );
+  void trocarPosicao(int index){
+    if (marcado != null){
+      Personagem? personagemTroca = getPersonagemNaPosicao(index, personagensEscolhidos);
+      if (personagemTroca != null){
+        personagens.move(personagemTroca, marcado!.posicao);
+      }
+    personagens.move(marcado!, index);
+    marcado = null;
+    estadosGrid.fillRange(0, 15, 0);
+    }
+  }
+
+  Personagem? getPersonagemNaPosicao(int posicao, List lista) {
+    final personagem = lista.where((p) => p.posicao == posicao);
+    return personagem.isNotEmpty ? personagem.first : null;
   }
 
   @override
   Widget build(BuildContext context) {
     personagens = context.watch<PersonagensRepository>();
-
-    List<Personagem> personagensEscolhidos = [];
 
     for (Personagem personagem in personagens.lista){
       if (personagem.checado == true){
@@ -42,17 +56,13 @@ class _HomeState extends State<Home> {
       }
     }
     
-<<<<<<< Updated upstream
-    return Column( // Use Column para empilhar widgets
-      children: personagensEscolhidos.map((personagem) => gerarTile(personagem)).toList(),
-=======
     return Column(
       mainAxisAlignment: MainAxisAlignment.end, // Posiciona a grid no final da tela
       children: [
         Container(
           height: 250, // Altura da grid 3 linhas
           padding: const EdgeInsets.all(8.0),
-          //color: const Color.fromARGB(0, 224, 224, 224),
+          color: const Color.fromARGB(0, 224, 224, 224),
           child: GridView.builder(
             physics: const NeverScrollableScrollPhysics(), // Desativa o scroll
             itemCount: 15, // 5x3 = 15 blocos
@@ -69,8 +79,7 @@ class _HomeState extends State<Home> {
                           : trocarPosicao(index), // Altera o estado ao clicar
                 child: Container(
                   decoration: BoxDecoration(
-                    //color: estadosGrid[index] == 0 ? const Color.fromARGB(122, 127, 56, 185) : Colors.blueAccent,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: estadosGrid[index] == 0 ? Colors.white : Colors.blueAccent,
                     borderRadius: BorderRadius.circular(8),
                     image: personagemDisplay != null
                           ? DecorationImage(
@@ -85,8 +94,6 @@ class _HomeState extends State<Home> {
           ),
         ),
       ],
->>>>>>> Stashed changes
     );
-    //return gerarTextoEscolhidos(personagensEscolhidos);
   }
 }
