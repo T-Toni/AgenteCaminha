@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:projeto/menu.dart';
+//import 'package:projeto/menu.dart';
+import 'package:projeto/pages/login.dart';
 
 
 class MyApp extends StatelessWidget {
@@ -12,11 +13,12 @@ class MyApp extends StatelessWidget {
       title: 'Projeto',
       theme: ThemeData(
 
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255,  135, 206, 235)),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 52, 22, 87), brightness: Brightness.dark),
         useMaterial3: true,
 
       ),
-      home: const Menu(title: 'AgenteCaminha'),
+      //home: const Menu(title: 'AgenteCaminha'),
+      home: LoginScreen(),
       //personagens: const Personagens(title: 'Editar')
     );
   }

@@ -42,8 +42,50 @@ class _HomeState extends State<Home> {
       }
     }
     
+<<<<<<< Updated upstream
     return Column( // Use Column para empilhar widgets
       children: personagensEscolhidos.map((personagem) => gerarTile(personagem)).toList(),
+=======
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end, // Posiciona a grid no final da tela
+      children: [
+        Container(
+          height: 250, // Altura da grid 3 linhas
+          padding: const EdgeInsets.all(8.0),
+          //color: const Color.fromARGB(0, 224, 224, 224),
+          child: GridView.builder(
+            physics: const NeverScrollableScrollPhysics(), // Desativa o scroll
+            itemCount: 15, // 5x3 = 15 blocos
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 5, // 5 colunas de lado a lado
+              mainAxisSpacing: 8.0,
+              crossAxisSpacing: 8.0,
+            ),
+            itemBuilder: (context, index) {
+              final personagemDisplay = getPersonagemNaPosicao(index, personagensEscolhidos);
+              return GestureDetector(
+                onTap: () => (personagemDisplay != null && marcado == null)
+                          ? marcarPersonagem(personagemDisplay, index)
+                          : trocarPosicao(index), // Altera o estado ao clicar
+                child: Container(
+                  decoration: BoxDecoration(
+                    //color: estadosGrid[index] == 0 ? const Color.fromARGB(122, 127, 56, 185) : Colors.blueAccent,
+                    color: Theme.of(context).colorScheme.primary,
+                    borderRadius: BorderRadius.circular(8),
+                    image: personagemDisplay != null
+                          ? DecorationImage(
+                              image: AssetImage(personagemDisplay.imagem),
+                              fit: BoxFit.cover,
+                            )
+                          : null, // Aplica a imagem do personagem, se houver
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+>>>>>>> Stashed changes
     );
     //return gerarTextoEscolhidos(personagensEscolhidos);
   }
