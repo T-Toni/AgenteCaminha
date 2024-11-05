@@ -1,6 +1,0 @@
-TO-DO:
-
-- Tirar o home e deixar so lutas, com um botão para começar a lutas
-
-- Os personagens serão dispostos em uma grid
-

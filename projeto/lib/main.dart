@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/app.dart';
 import 'package:projeto/repositories/personagens_repository.dart';
-import 'package:projeto/repositories/usuario_repository';
+import 'package:projeto/repositories/usuarios_repository.dart';
 import 'package:provider/provider.dart';
 
 //void main() {

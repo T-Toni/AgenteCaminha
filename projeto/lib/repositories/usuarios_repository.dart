@@ -4,14 +4,17 @@ import 'package:projeto/models/usuario.dart';
 
 class UsuariosRepository extends ChangeNotifier{
   final List<Usuario>_lista = [
-      Usuario(nome: 'toni', login: "antonio", senha: "antonio"),
-      Usuario(nome: 'peido', login: "pedro", senha: "pedro"),
+      Usuario(nome: 'João', login: "joao", senha: "123"),
+      Usuario(nome: 'Antônio', login: "antonio", senha: "123"),
+      Usuario(nome: 'Pedro', login: "pedro", senha: "123"),
     ];
+  late Usuario userLoggedIn;
 
   UnmodifiableListView<Usuario> get lista => UnmodifiableListView(_lista);
 
-  remove(Usuario Usuario){
-    _lista.remove(Usuario);
+
+  remove(Usuario usuario){
+    _lista.remove(usuario);
     notifyListeners();
   }
 
@@ -33,16 +36,13 @@ class UsuariosRepository extends ChangeNotifier{
 
   bool validaUsuario(String login, String senha){
 
-    bool existe = false;
-
     for (var usuario in _lista){
-      if (usuario.login != login || usuario.senha != senha){
-      }
-      else{
-        existe = true;
+      if (usuario.login == login && usuario.senha == senha){
+        userLoggedIn = usuario;
+        return true;
       }
     }
 
-    return existe;
+    return false;
   }
 }

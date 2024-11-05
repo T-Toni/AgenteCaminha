@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:projeto/repositories/usuario_repository';
+import 'package:projeto/repositories/usuarios_repository.dart';
 import 'package:provider/provider.dart';
 
 class SigninScreen extends StatelessWidget {
@@ -58,23 +58,23 @@ class SigninScreen extends StatelessWidget {
                 String password = _passwordController.text;
 
               
-                //confere se todos os campos foram preenchidos
-                if (name == '' || username == ""|| password == "") 
+                // Confere se todos os campos foram preenchidos
+                if (name == '' || username == '' || password == '') 
                 {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Preencha todos os campos.')), //apresenta o aviso
+                    const SnackBar(content: Text('Preencha todos os campos.')), // Apresenta o aviso se os campos não estiverem preenchidos
                   );
                 }
                 else  
                 {
-                  //cadastra um novo usuário
-                  bool sucesso = usuarios.save(name, username, password);   //salva o novo usuario ou avisa que ja existe
+                  // Cadastra um novo usuário
+                  bool sucesso = usuarios.save(name, username, password);   // Salva o novo usuario ou avisa que já existe
 
                   if (sucesso){
-                    Navigator.pop(context); //retorna para a tela anterior
+                    Navigator.pop(context); // Retorna para a tela anterior
                   }else{
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Usuário ja cadastrado! Tente novamente.')),   //avisa que ja existe um usuário
+                      const SnackBar(content: Text('Usuário ja cadastrado! Tente novamente.')),   // Avisa que ja existe um usuário
                     );
                   }
                 }

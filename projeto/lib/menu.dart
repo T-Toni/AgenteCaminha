@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/pages/home.dart';
+import 'package:projeto/pages/login.dart';
 import 'package:projeto/pages/luta.dart';
 import 'package:projeto/pages/personagens_lista.dart';
+import 'package:projeto/repositories/usuarios_repository.dart';
+import 'package:provider/provider.dart';
 
 
 class Menu extends StatefulWidget {
@@ -15,6 +18,7 @@ class Menu extends StatefulWidget {
 
 class _MenuState extends State<Menu> {
   int _selectedIndex = 1;
+  late UsuariosRepository usuarios;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -24,19 +28,22 @@ class _MenuState extends State<Menu> {
 
   void _onConfigTapped() {
     setState(() {
-      //print("sa");
+      String nomeUsuario = usuarios.userLoggedIn.nome;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Oi $nomeUsuario, suas configurações ainda não foram liberadas!')),
+      );
     });
   }
 
   static const List<Widget> _widgetOptions = <Widget>[
     Personagens(),
-    Home(title: 'Home'),
-    Luta(title: 'Luta'),
+    Home(),
+    Luta(),
   ];
   
   @override
   Widget build(BuildContext context) {
-
+    usuarios = context.watch<UsuariosRepository>();
     return Scaffold( //tela
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,

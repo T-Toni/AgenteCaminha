@@ -4,9 +4,7 @@ import 'package:projeto/repositories/personagens_repository.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key, required this.title});
-
-  final String title;
+  const Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -59,6 +57,7 @@ class _HomeState extends State<Home> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end, // Posiciona a grid no final da tela
       children: [
+        Expanded(child: Container()),
         Container(
           height: 250, // Altura da grid 3 linhas
           padding: const EdgeInsets.all(8.0),
@@ -79,7 +78,7 @@ class _HomeState extends State<Home> {
                           : trocarPosicao(index), // Altera o estado ao clicar
                 child: Container(
                   decoration: BoxDecoration(
-                    color: estadosGrid[index] == 0 ? Colors.white : Colors.blueAccent,
+                    color: estadosGrid[index] == 0 ? Colors.white : const Color.fromARGB(255, 140, 68, 255),
                     borderRadius: BorderRadius.circular(8),
                     image: personagemDisplay != null
                           ? DecorationImage(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:projeto/menu.dart';
 import 'package:projeto/pages/login.dart';
 
 
@@ -17,9 +16,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
 
       ),
-      //home: const Menu(title: 'AgenteCaminha'),
       home: LoginScreen(),
-      //personagens: const Personagens(title: 'Editar')
     );
   }
 }

@@ -4,9 +4,9 @@ import 'package:projeto/models/personagem.dart';
 
 class PersonagensRepository extends ChangeNotifier{
   final List<Personagem>_lista = [
-      Personagem(nome: 'guerreiro', imagem: 'assets/bola1.png', posicao: 0),
-      Personagem(nome: 'curandeira', imagem: 'assets/bola2.png', posicao: 1),
-      Personagem(nome: 'mago', imagem: 'assets/mago.png', posicao: 2),
+      Personagem(nome: 'Guerreiro', imagem: 'assets/bola2.png', posicao: 0),
+      Personagem(nome: 'Curandeira', imagem: 'assets/bola1.png', posicao: 1),
+      Personagem(nome: 'Mago', imagem: 'assets/mago.png', posicao: 2),
     ];
 
   UnmodifiableListView<Personagem> get lista => UnmodifiableListView(_lista);

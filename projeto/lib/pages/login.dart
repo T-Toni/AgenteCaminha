@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/menu.dart';
 import 'package:projeto/pages/cadastro.dart';
-import 'package:projeto/repositories/usuario_repository';
+import 'package:projeto/repositories/usuarios_repository.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -57,7 +57,7 @@ class LoginScreen extends StatelessWidget {
                 }
                 else
                 {
-                  //verificar se o login existe
+                  // Verificar se o login existe
                   bool sucesso = usuarios.validaUsuario(username, password);
 
                   if (sucesso){
