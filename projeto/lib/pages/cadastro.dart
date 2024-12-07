@@ -1,15 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/repositories/usuarios_repository.dart';
+import 'package:projeto/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
-class SigninScreen extends StatelessWidget {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
+class SigninScreen extends StatefulWidget {
+  SigninScreen({Key? key }) : super(key: key);
+
+  @override
+  _SigninScreenState createState() => _SigninScreenState();
+
+}
+class _SigninScreenState extends State<SigninScreen>{
+  
+  //final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   late UsuariosRepository usuarios;
 
-  SigninScreen({super.key});
+  registrar() async{
+    try {
+      await context.read<AuthService>().registrar(_emailController.text, _passwordController.text);
+    } on AuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,69 +36,75 @@ class SigninScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Cadastro'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Nome',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _usernameController,
-              decoration: const InputDecoration(
-                labelText: 'Usuário',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                labelText: 'Senha',
-                border: OutlineInputBorder(),
-              ),
-              obscureText: true, // Oculta a senha
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                // Captura os valores dos campos de texto
-                String name = _nameController.text;
-                String username = _usernameController.text;
-                String password = _passwordController.text;
-
-              
-                // Confere se todos os campos foram preenchidos
-                if (name == '' || username == '' || password == '') 
-                {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Preencha todos os campos.')), // Apresenta o aviso se os campos não estiverem preenchidos
-                  );
-                }
-                else  
-                {
-                  // Cadastra um novo usuário
-                  bool sucesso = usuarios.save(name, username, password);   // Salva o novo usuario ou avisa que já existe
-
-                  if (sucesso){
-                    Navigator.pop(context); // Retorna para a tela anterior
-                  }else{
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Usuário ja cadastrado! Tente novamente.')),   // Avisa que ja existe um usuário
-                    );
+      body: SingleChildScrollView(
+        child : Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form (
+            key : formKey,
+            child : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                /*
+                TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nome',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty){
+                      return "Informe seu nome!";
+                    }
+                    return null;
                   }
-                }
-
-              },
-              child: const Text('Cadastrar'),
-            )
-          ],
+                ),
+                const SizedBox(height: 16),
+                */
+                TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty){
+                      return "Informe seu email!";
+                    }
+                    return null;
+                  },
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(
+                    labelText: 'Senha',
+                    border: OutlineInputBorder(),
+                  ),
+                  obscureText: true, // Oculta a senha
+                  validator: (value) {
+                    if (value!.isEmpty){
+                      return "Informe sua senha!";
+                    }
+                    else if (value.length < 6){
+                      return "Sua senha deve ter no mínimo 6 caracteres";
+                    }
+                    return null;
+                  }
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    if (formKey.currentState!.validate()){
+                      registrar();
+                    }
+                  },
+                  child: const Text('Cadastrar'),
+                ),
+                const SizedBox(height: 16),
+              ],
+            ),
+          ),
         ),
       ),
     );

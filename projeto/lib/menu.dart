@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/pages/home.dart';
-import 'package:projeto/pages/login.dart';
 import 'package:projeto/pages/luta.dart';
 import 'package:projeto/pages/personagens_lista.dart';
 import 'package:projeto/repositories/usuarios_repository.dart';
+import 'package:projeto/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
 
 class Menu extends StatefulWidget {
-  const Menu({super.key, required this.title});
-
-  final String title;
+  const Menu({super.key});
 
   @override
   State<Menu> createState() => _MenuState();
@@ -18,7 +16,7 @@ class Menu extends StatefulWidget {
 
 class _MenuState extends State<Menu> {
   int _selectedIndex = 1;
-  late UsuariosRepository usuarios;
+  //late UsuariosRepository usuarios;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -28,9 +26,11 @@ class _MenuState extends State<Menu> {
 
   void _onConfigTapped() {
     setState(() {
-      String nomeUsuario = usuarios.userLoggedIn.nome;
+      context.read<AuthService>().logout();
+      //String nomeUsuario = usuarios.userLoggedIn.nome;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Oi $nomeUsuario, suas configurações ainda não foram liberadas!')),
+        //SnackBar(content: Text('Oi $nomeUsuario, suas configurações ainda não foram liberadas!')),
+        SnackBar(content: Text('Logout com sucesso')),
       );
     });
   }
@@ -43,13 +43,13 @@ class _MenuState extends State<Menu> {
   
   @override
   Widget build(BuildContext context) {
-    usuarios = context.watch<UsuariosRepository>();
+    //usuarios = context.watch<UsuariosRepository>();
     return Scaffold( //tela
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        actions: [IconButton(onPressed: _onConfigTapped, icon: const Icon(Icons.settings))],
+        actions: [IconButton(onPressed: _onConfigTapped, icon: const Icon(Icons.logout))],
         title: Text(
-          widget.title,
+          "AgenteCaminha",
           style: const TextStyle(
             //color: Color.fromARGB(255, 24, 59, 92),
             fontSize: 20.0

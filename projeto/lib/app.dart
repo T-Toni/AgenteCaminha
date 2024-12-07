@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:projeto/pages/login.dart';
+import 'package:projeto/pages/auth_check.dart';
 
 
 class MyApp extends StatelessWidget {
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
 
       ),
-      home: LoginScreen(),
+      home: AuthCheck(),
     );
   }
 }
