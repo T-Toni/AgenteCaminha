@@ -13,11 +13,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   late PersonagensRepository personagens;
-  
+
   List<int> estadosGrid = List<int>.filled(15, 0);
-  
+
   Personagem? marcado;
 
   List<Personagem> personagensEscolhidos = [];
@@ -29,15 +28,16 @@ class _HomeState extends State<Home> {
     marcado = personagem;
   }
 
-  void trocarPosicao(int index){
-    if (marcado != null){
-      Personagem? personagemTroca = getPersonagemNaPosicao(index, personagensEscolhidos);
-      if (personagemTroca != null){
+  void trocarPosicao(int index) {
+    if (marcado != null) {
+      Personagem? personagemTroca =
+          getPersonagemNaPosicao(index, personagensEscolhidos);
+      if (personagemTroca != null) {
         personagens.move(personagemTroca, marcado!.posicao);
       }
-    personagens.move(marcado!, index);
-    marcado = null;
-    estadosGrid.fillRange(0, 15, 0);
+      personagens.move(marcado!, index);
+      marcado = null;
+      estadosGrid.fillRange(0, 15, 0);
     }
   }
 
@@ -47,53 +47,83 @@ class _HomeState extends State<Home> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    personagens = context.watch<PersonagensRepository>();
+  void initState() {
+    super.initState();
+    personagens = context
+        .read<PersonagensRepository>(); // Use read() para evitar rebuilds
 
-    for (Personagem personagem in personagens.lista){
-      if (personagem.checado == true){
+    // Carrega os personagens selecionados ao iniciar
+    personagens.carregarPersonagens().then((personagensCarregados) {
+      setState(() {
+        personagensEscolhidos = personagensCarregados;
+      });
+    });
+  }
+
+  // Função para salvar as posições no Firebase
+  void salvarPosicoes() {
+    personagens.salvarPosicoesNoFirebase(personagensEscolhidos);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    for (Personagem personagem in personagens.lista) {
+      if (personagem.checado == true) {
         personagensEscolhidos.add(personagem);
       }
     }
-    
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end, // Posiciona a grid no final da tela
-      children: [
-        Container(
-          height: 250, // Altura da grid 3 linhas
-          padding: const EdgeInsets.all(8.0),
-          color: const Color.fromARGB(0, 224, 224, 224),
-          child: GridView.builder(
-            physics: const NeverScrollableScrollPhysics(), // Desativa o scroll
-            itemCount: 15, // 5x3 = 15 blocos
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 5, // 5 colunas de lado a lado
-              mainAxisSpacing: 8.0,
-              crossAxisSpacing: 8.0,
-            ),
-            itemBuilder: (context, index) {
-              final personagemDisplay = getPersonagemNaPosicao(index, personagensEscolhidos);
-              return GestureDetector(
-                onTap: () => (personagemDisplay != null && marcado == null)
-                          ? marcarPersonagem(personagemDisplay, index)
-                          : trocarPosicao(index), // Altera o estado ao clicar
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: estadosGrid[index] == 0 ? Colors.white : Colors.blueAccent,
-                    borderRadius: BorderRadius.circular(8),
-                    image: personagemDisplay != null
+
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.title)),
+      body: Column(
+        mainAxisAlignment:
+            MainAxisAlignment.end, // Posiciona a grid no final da tela
+        children: [
+          Container(
+            height: 250, // Altura da grid 3 linhas
+            padding: const EdgeInsets.all(8.0),
+            color: const Color.fromARGB(0, 224, 224, 224),
+            child: GridView.builder(
+              physics:
+                  const NeverScrollableScrollPhysics(), // Desativa o scroll
+              itemCount: 15, // 5x3 = 15 blocos
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 5, // 5 colunas de lado a lado
+                mainAxisSpacing: 8.0,
+                crossAxisSpacing: 8.0,
+              ),
+              itemBuilder: (context, index) {
+                final personagemDisplay =
+                    getPersonagemNaPosicao(index, personagensEscolhidos);
+                return GestureDetector(
+                  onTap: () => (personagemDisplay != null && marcado == null)
+                      ? marcarPersonagem(personagemDisplay, index)
+                      : trocarPosicao(index), // Altera o estado ao clicar
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: estadosGrid[index] == 0
+                          ? Colors.white
+                          : Colors.blueAccent,
+                      borderRadius: BorderRadius.circular(8),
+                      image: personagemDisplay != null
                           ? DecorationImage(
                               image: AssetImage(personagemDisplay.imagem),
                               fit: BoxFit.cover,
                             )
                           : null, // Aplica a imagem do personagem, se houver
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-      ],
+          ElevatedButton(
+            onPressed:
+                salvarPosicoes, // Botão para salvar as posições no Firebase
+            child: const Text('Salvar Posições'),
+          ),
+        ],
+      ),
     );
   }
 }

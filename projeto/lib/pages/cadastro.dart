@@ -13,7 +13,6 @@ class SigninScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     usuarios = context.watch<UsuariosRepository>();
 
     return Scaffold(
@@ -57,28 +56,28 @@ class SigninScreen extends StatelessWidget {
                 String username = _usernameController.text;
                 String password = _passwordController.text;
 
-              
                 //confere se todos os campos foram preenchidos
-                if (name == '' || username == ""|| password == "") 
-                {
+                if (name == '' || username == "" || password == "") {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Preencha todos os campos.')), //apresenta o aviso
+                    const SnackBar(
+                        content: Text(
+                            'Preencha todos os campos.')), //apresenta o aviso
                   );
-                }
-                else  
-                {
+                } else {
                   //cadastra um novo usuário
-                  bool sucesso = usuarios.save(name, username, password);   //salva o novo usuario ou avisa que ja existe
+                  bool sucesso = usuarios.save(name, username,
+                      password); //salva o novo usuario ou avisa que ja existe
 
-                  if (sucesso){
+                  if (sucesso) {
                     Navigator.pop(context); //retorna para a tela anterior
-                  }else{
+                  } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Usuário ja cadastrado! Tente novamente.')),   //avisa que ja existe um usuário
+                      const SnackBar(
+                          content: Text(
+                              'Usuário ja cadastrado! Tente novamente.')), //avisa que ja existe um usuário
                     );
                   }
                 }
-
               },
               child: const Text('Cadastrar'),
             )

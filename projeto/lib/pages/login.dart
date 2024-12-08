@@ -14,7 +14,6 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     usuarios = context.watch<UsuariosRepository>();
 
     return Scaffold(
@@ -49,25 +48,26 @@ class LoginScreen extends StatelessWidget {
                 String username = _usernameController.text;
                 String password = _passwordController.text;
 
-                if (username == ""|| password == "") 
-                {
+                if (username == "" || password == "") {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Preencha todos os campos.')),
                   );
-                }
-                else
-                {
+                } else {
                   //verificar se o login existe
                   bool sucesso = usuarios.validaUsuario(username, password);
 
-                  if (sucesso){
+                  if (sucesso) {
                     Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const Menu(title: 'AgenteCaminha')), // tira a tela de login e substitui pela tela do jogo em si
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const Menu(
+                              title:
+                                  'AgenteCaminha')), // tira a tela de login e substitui pela tela do jogo em si
                     );
-                  }else {
+                  } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Login falhou! Tente novamente.')),
+                      const SnackBar(
+                          content: Text('Login falhou! Tente novamente.')),
                     );
                   }
                 }

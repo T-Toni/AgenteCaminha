@@ -3,7 +3,6 @@ import 'package:projeto/pages/home.dart';
 import 'package:projeto/pages/luta.dart';
 import 'package:projeto/pages/personagens_lista.dart';
 
-
 class Menu extends StatefulWidget {
   const Menu({super.key, required this.title});
 
@@ -33,27 +32,29 @@ class _MenuState extends State<Menu> {
     Home(title: 'Home'),
     Luta(title: 'Luta'),
   ];
-  
+
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold( //tela
+    return Scaffold(
+      //tela
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        actions: [IconButton(onPressed: _onConfigTapped, icon: const Icon(Icons.settings))],
+        actions: [
+          IconButton(
+              onPressed: _onConfigTapped, icon: const Icon(Icons.settings))
+        ],
         title: Text(
           widget.title,
           style: const TextStyle(
-            //color: Color.fromARGB(255, 24, 59, 92),
-            fontSize: 20.0
-            ),
-          ), //tipo um this
+              //color: Color.fromARGB(255, 24, 59, 92),
+              fontSize: 20.0),
+        ), //tipo um this
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,   
+
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -76,7 +77,6 @@ class _MenuState extends State<Menu> {
         //selectedItemColor: const Color.fromARGB(255, 24, 59, 92),
         onTap: _onItemTapped,
       ),
-    
     );
   }
 }

@@ -10,10 +10,8 @@ class Luta extends StatefulWidget {
 }
 
 class _LutaState extends State<Luta> {
-
-   @override
+  @override
   Widget build(BuildContext context) {
-
     return const Text('lutas');
   }
 }
