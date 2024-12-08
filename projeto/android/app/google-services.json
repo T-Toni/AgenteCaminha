@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "256774816282",
+    "firebase_url": "https://agente-caminha-default-rtdb.firebaseio.com",
     "project_id": "agente-caminha",
     "storage_bucket": "agente-caminha.firebasestorage.app"
   },

@@ -58,7 +58,7 @@ class PersonagensRepository extends ChangeNotifier {
       List<Personagem> personagensEscolhidos) async {
     try {
       WriteBatch batch = db.batch();
-      CollectionReference personagensRef = db.collection('times');
+      CollectionReference personagensRef = db.collection('personagens');
 
       for (var personagem in personagensEscolhidos) {
         DocumentReference docRef = personagensRef.doc(personagem.id);
