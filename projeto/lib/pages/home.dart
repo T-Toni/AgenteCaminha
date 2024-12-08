@@ -44,6 +44,10 @@ class _HomeState extends State<Home> {
     return personagem.isNotEmpty ? personagem.first : null;
   }
 
+  void salvarPosicoes() {
+    personagens.salvarPosicoesNoFirebase(personagensEscolhidos);
+  }
+
   @override
   Widget build(BuildContext context) {
     personagens = context.watch<PersonagensRepository>();
@@ -92,6 +96,11 @@ class _HomeState extends State<Home> {
             },
           ),
         ),
+        ElevatedButton(
+            onPressed:
+                salvarPosicoes, // Botão para salvar as posições no Firebase
+            child: const Text('Salvar Posições'),
+        )
       ],
     );
   }
