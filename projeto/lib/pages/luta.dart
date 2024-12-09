@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:bonfire/bonfire.dart';
 
-final tileSize = 32;
+final double tileSize = 16;
 
 class Luta extends StatefulWidget {
   const Luta({super.key});
@@ -27,11 +27,16 @@ class _LutaState extends State<Luta> {
 
       map: WorldMapByTiled(
 
-        WorldMapReader.fromAsset("mapa1.json")
-
+        WorldMapReader.fromAsset("map.json"),
+        
+        objectsBuilder: {
+              'aliado': (TiledObjectProperties properties) => Goblin(Vector2(10*tileSize, 10*tileSize), "mago.png"),
+          },
         //Uri.parse('https://raw.githubusercontent.com/RafaelBarbosatec/rafaelbarbosatec.github.io/master/tiled/my_map.json')
         
         ),
+
+        
       )
       
     );
