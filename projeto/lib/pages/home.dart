@@ -36,6 +36,7 @@ class _HomeState extends State<Home> {
     personagens.move(marcado!, index);
     marcado = null;
     estadosGrid.fillRange(0, 15, 0);
+    salvarPosicoes();
     }
   }
 
@@ -96,11 +97,13 @@ class _HomeState extends State<Home> {
             },
           ),
         ),
+        /*
         ElevatedButton(
             onPressed:
                 salvarPosicoes, // Botão para salvar as posições no Firebase
             child: const Text('Salvar Posições'),
         )
+        */
       ],
     );
   }

@@ -23,11 +23,10 @@ class PersonagensRepository extends ChangeNotifier {
       List<Personagem> personagensToUpdate = [];
       for (Personagem personagem in personagens){
         var personagemLocal = lista.where((p) => p.id == personagem.id).first;
-        personagemLocal.checado = personagem.checado;
-        personagemLocal.posicao = personagem.posicao;
+        _updateValuesPersonagem(personagemLocal, personagem);
         personagensToUpdate.add(personagemLocal);
       }
-      saveAll(personagensToUpdate); // VERIFICAR ID SEPA?
+      saveAll(personagensToUpdate);
     });
     notifyListeners();
   }
@@ -84,7 +83,7 @@ class PersonagensRepository extends ChangeNotifier {
   // Função para carregar personagens do Firestore
   Future<List<Personagem>> carregarPersonagens() async {
     try {
-      QuerySnapshot snapshot = await db.collection('personagens').get();
+      QuerySnapshot snapshot = await  db.collection('users').doc(_auth.currentUser?.uid).collection('personagens').get();
 
       List<Personagem> personagensCarregados = snapshot.docs.map((doc) {
         final data = doc.data() as Map<String, dynamic>;
