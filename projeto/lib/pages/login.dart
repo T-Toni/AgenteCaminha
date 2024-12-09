@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/pages/cadastro.dart';
-import 'package:projeto/repositories/usuarios_repository.dart';
 import 'package:projeto/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
@@ -17,8 +16,6 @@ class _LoginScreenState extends State<LoginScreen>{
   final TextEditingController _passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  late UsuariosRepository usuarios;
-
   login() async{
     try {
       await context.read<AuthService>().login(_emailController.text, _passwordController.text);
@@ -29,8 +26,6 @@ class _LoginScreenState extends State<LoginScreen>{
   
   @override
   Widget build(BuildContext context) {
-
-    usuarios = context.watch<UsuariosRepository>();
 
     return Scaffold(
       appBar: AppBar(
