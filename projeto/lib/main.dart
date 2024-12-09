@@ -3,6 +3,8 @@ import 'package:projeto/app.dart';
 import 'package:projeto/firebase_options.dart';
 import 'package:projeto/repositories/personagens_repository.dart';
 import 'package:projeto/services/auth_service.dart';
+
+
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 
