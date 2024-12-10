@@ -1,7 +1,8 @@
-import 'dart:async';
+//import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:bonfire/bonfire.dart';
+import 'package:projeto/pages/game_sprite_sheet.dart' as ss;
 
 final double tileSize = 16;
 
@@ -28,17 +29,32 @@ class _LutaState extends State<Luta> {
       map: WorldMapByTiled(
 
         WorldMapReader.fromAsset("map.json"),
-        
-        objectsBuilder: {
-              'aliado': (TiledObjectProperties properties) => Goblin(Vector2(10*tileSize, 10*tileSize), "mago.png"),
-          },
+      
         //Uri.parse('https://raw.githubusercontent.com/RafaelBarbosatec/rafaelbarbosatec.github.io/master/tiled/my_map.json')
         
         ),
 
-        
+        components: [
+
+        GameDecoration.withSprite(
+         
+          position: Vector2(13 * tileSize, 21 * tileSize),
+          size: Vector2(tileSize*2, tileSize*2),
+          sprite: Sprite.load('mago.png'),
+
+          )
+
+          //Goblin(Vector2(0*tileSize, 0*tileSize), "mago.png")
+        ],
+
+        cameraConfig: CameraConfig(
+          moveOnlyMapArea: true,
+        ),
+
       )
       
+      
+
     );
 
   }
@@ -55,18 +71,8 @@ class Goblin extends SimpleAlly {
           speed: 100,
           initDirection: Direction.right,
           animation: SimpleDirectionAnimation(
-            idleRight: Future<SpriteAnimation>(
-              SpriteAnimation.load(
-                imagem, 
-                SpriteAnimationData.sequenced(amount: 1, stepTime: 0, textureSize: Vector2(32, 32))
-              ) as FutureOr<SpriteAnimation> Function()
-            ), // required 
-            runRight: Future<SpriteAnimation>(
-              SpriteAnimation.load(
-                imagem, 
-                SpriteAnimationData.sequenced(amount: 1, stepTime: 0, textureSize: Vector2(32, 32))
-              ) as FutureOr<SpriteAnimation> Function()
-              ), // required
+            idleRight: ss.GameSpriteSheet().magoIdRight,
+            runRight: ss.GameSpriteSheet().magoRunRight,
           ),
       );
 
@@ -79,6 +85,10 @@ class Goblin extends SimpleAlly {
     @override
     void render(Canvas canvas) {
       // do anything
+
+      
+
+      // canvas.drawRect(Rect.fromLTWH(0, 0, width, height), paint);
       super.render(canvas);
     }
 }
