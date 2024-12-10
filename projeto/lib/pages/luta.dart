@@ -2,9 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:bonfire/bonfire.dart';
+import 'package:projeto/models/personagem.dart';
 import 'package:projeto/pages/game_sprite_sheet.dart' as ss;
+import 'package:projeto/repositories/personagens_repository.dart';
+import 'package:provider/provider.dart';
 
 final double tileSize = 16;
+late PersonagensRepository personagens;
 
 class Luta extends StatefulWidget {
   const Luta({super.key});
@@ -15,8 +19,23 @@ class Luta extends StatefulWidget {
 
 class _LutaState extends State<Luta> {
 
+  List<GameDecoration> criarDecoracoes(List<Personagem> personagensEscolhidos, double tileSize) {
+    return personagensEscolhidos.map((personagem) {
+      return GameDecoration.withSprite(
+        position: Vector2(13 + ((personagem.posicao+1)~/5) * 2 * tileSize, 21 + 2 * ((personagem.posicao+1) % 5) * tileSize),
+        size: Vector2(tileSize, tileSize),
+        sprite: Sprite.load('mago.png'),
+      );
+    }).toList();
+  }
    @override
   Widget build(BuildContext context) {
+
+    personagens = context.watch<PersonagensRepository>();
+
+    var personagensEscolhidos = personagens.getPersonagensEscolhidos();
+
+    List<GameDecoration> decorations = criarDecoracoes(personagensEscolhidos, tileSize);
 
     return Scaffold(
     body: BonfireWidget(
@@ -34,18 +53,7 @@ class _LutaState extends State<Luta> {
         
         ),
 
-        components: [
-
-        GameDecoration.withSprite(
-         
-          position: Vector2(13 * tileSize, 21 * tileSize),
-          size: Vector2(tileSize*2, tileSize*2),
-          sprite: Sprite.load('mago.png'),
-
-          )
-
-          //Goblin(Vector2(0*tileSize, 0*tileSize), "mago.png")
-        ],
+        components: decorations,
 
         cameraConfig: CameraConfig(
           moveOnlyMapArea: true,

@@ -53,11 +53,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     personagens = context.watch<PersonagensRepository>();
 
-    for (Personagem personagem in personagens.lista){
-      if (personagem.checado == true){
-        personagensEscolhidos.add(personagem);
-      }
-    }
+    personagensEscolhidos = personagens.getPersonagensEscolhidos();
     
     return Column(
       mainAxisAlignment: MainAxisAlignment.end, // Posiciona a grid no final da tela

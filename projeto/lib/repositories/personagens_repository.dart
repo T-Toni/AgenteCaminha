@@ -100,6 +100,17 @@ class PersonagensRepository extends ChangeNotifier {
       print("Erro ao carregar personagens do Firebase: $e");
       return [];
     }
+  }
+
+  List<Personagem> getPersonagensEscolhidos(){
+    List<Personagem> personagensEscolhidos = [];
+
+    for (Personagem personagem in lista){
+      if (personagem.checado == true){
+        personagensEscolhidos.add(personagem);
+      }
+    }
     
+    return personagensEscolhidos;
   }
 }
