@@ -22,9 +22,11 @@ class _LutaState extends State<Luta> {
   List<GameDecoration> criarDecoracoes(List<Personagem> personagensEscolhidos, double tileSize) {
     return personagensEscolhidos.map((personagem) {
       return GameDecoration.withSprite(
-        position: Vector2(13 + ((personagem.posicao+1)~/5) * 2 * tileSize, 21 + 2 * ((personagem.posicao+1) % 5) * tileSize),
-        size: Vector2(tileSize, tileSize),
-        sprite: Sprite.load('mago.png'),
+        position: Vector2((13 + 3* ((personagem.posicao) % 5)) * tileSize, (21 + ((personagem.posicao)~/5) * 3) * tileSize),
+        //position: Vector2((13 + ((personagem.posicao) % 5)) * tileSize * 2, (21 + (personagem.posicao)~/5) * tileSize * 2),
+        //position: Vector2(19 * tileSize, 24 * tileSize),
+        size: Vector2(tileSize*2, tileSize*2),
+        sprite: Sprite.load(personagem.imagem.split('/').last),
       );
     }).toList();
   }
@@ -41,7 +43,12 @@ class _LutaState extends State<Luta> {
     body: BonfireWidget(
       playerControllers: [
         Joystick(
-          directional: JoystickDirectional(),
+          directional: JoystickDirectional(
+            size: 40,
+            color: Colors.black,
+            alignment: Alignment.bottomCenter
+
+          ),
         )
       ],
 
@@ -57,6 +64,7 @@ class _LutaState extends State<Luta> {
 
         cameraConfig: CameraConfig(
           moveOnlyMapArea: true,
+          initPosition: Vector2(20*tileSize, 20*tileSize),
         ),
 
       )

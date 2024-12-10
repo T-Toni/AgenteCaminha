@@ -3,14 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto/models/personagem.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:projeto/services/auth_service.dart';
 
 class PersonagensRepository extends ChangeNotifier {
   final List<Personagem> _lista = [
-    Personagem(id: '1', nome: 'guerreiro', imagem: 'assets/bola1.png', posicao: 0),
-    Personagem(id: '2', nome: 'curandeira', imagem: 'assets/bola2.png', posicao: 1),
-    Personagem(id: '3', nome: 'mago', imagem: 'assets/mago.png', posicao: 2),
+    Personagem(id: '1', nome: 'guerreiro', imagem: 'assets/images/bola1.png', posicao: 0),
+    Personagem(id: '2', nome: 'curandeira', imagem: 'assets/images/bola2.png', posicao: 1),
+    Personagem(id: '3', nome: 'mago', imagem: 'assets/images/mago.png', posicao: 2),
   ];
 
   late FirebaseFirestore db = FirebaseFirestore.instance;

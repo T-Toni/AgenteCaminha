@@ -2,7 +2,6 @@ import 'package:bonfire/bonfire.dart';
 
 class CharacterSpritesheet {
   final String path;
-  static final _size = 16.0;
 
   CharacterSpritesheet({
     required String fileName,
