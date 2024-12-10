@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:bonfire/bonfire.dart';
 import 'package:projeto/models/personagem.dart';
-import 'package:projeto/pages/game_sprite_sheet.dart' as ss;
+import 'package:projeto/utils/character_spritesheet.dart';
 import 'package:projeto/repositories/personagens_repository.dart';
 import 'package:provider/provider.dart';
 
@@ -39,25 +39,29 @@ class _LutaState extends State<Luta> {
 
     List<GameDecoration> decorations = criarDecoracoes(personagensEscolhidos, tileSize);
 
+    decorations.add(
+      GameDecoration.withSprite(
+        position: Vector2((12.5 + 3 * ((2) % 5)) * tileSize, 13*tileSize),
+        size: Vector2(tileSize*3, tileSize*3),
+        sprite: Sprite.load('bola2.png'),
+      )
+    );
+
     return Scaffold(
-    body: BonfireWidget(
-      playerControllers: [
-        Joystick(
-          directional: JoystickDirectional(
-            size: 40,
-            color: Colors.black,
-            alignment: Alignment.bottomCenter
+      body: BonfireWidget(
+        playerControllers: [
+          Joystick(
+            directional: JoystickDirectional(
+              size: 40,
+              color: Colors.black,
+              alignment: Alignment.bottomCenter
 
-          ),
-        )
-      ],
+            ),
+          )
+        ],
 
-      map: WorldMapByTiled(
-
-        WorldMapReader.fromAsset("map.json"),
-      
-        //Uri.parse('https://raw.githubusercontent.com/RafaelBarbosatec/rafaelbarbosatec.github.io/master/tiled/my_map.json')
-        
+        map: WorldMapByTiled(
+          WorldMapReader.fromAsset("map.json")
         ),
 
         components: decorations,
@@ -86,24 +90,16 @@ class Goblin extends SimpleAlly {
           life: 100,
           speed: 100,
           initDirection: Direction.right,
-          animation: SimpleDirectionAnimation(
-            idleRight: ss.GameSpriteSheet().magoIdRight,
-            runRight: ss.GameSpriteSheet().magoRunRight,
-          ),
+          animation: CharacterSpritesheet(fileName: 'mago.png').getAnimation()
       );
 
     @override
     void update(double dt) {
-      // do anything
       super.update(dt);
     }
 
     @override
     void render(Canvas canvas) {
-      // do anything
-
-      
-
       // canvas.drawRect(Rect.fromLTWH(0, 0, width, height), paint);
       super.render(canvas);
     }
