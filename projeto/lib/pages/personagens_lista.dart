@@ -24,8 +24,9 @@ class _PersonagensState extends State<Personagens> {
     ),
     value: personagem.checado,
     onChanged: (bool? newValue) {
-      personagem.checado = newValue; // Atualiza o estado do personagem específicos
+      personagem.checado = newValue!; // Atualiza o estado do personagem específicos
       personagens.saveAll([personagem]);  // Salva os personagens escolhidos no "repositorio" de personagens escolhidos
+      personagens.salvarPosicoesNoFirebase([personagem]);
     },
     //activeColor: colorScheme.primary,
     //checkColor: colorScheme.primary,

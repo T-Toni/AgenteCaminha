@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:projeto/pages/home.dart';
 import 'package:projeto/pages/luta.dart';
 import 'package:projeto/pages/personagens_lista.dart';
-import 'package:projeto/repositories/usuarios_repository.dart';
 import 'package:projeto/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +15,6 @@ class Menu extends StatefulWidget {
 
 class _MenuState extends State<Menu> {
   int _selectedIndex = 1;
-  //late UsuariosRepository usuarios;
 
   void _onItemTapped(int index) {
     setState(() {

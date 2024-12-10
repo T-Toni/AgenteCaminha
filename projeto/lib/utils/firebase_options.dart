@@ -57,6 +57,8 @@ class DefaultFirebaseOptions {
     appId: '1:256774816282:android:4c052bb71a250f9256c7a3',
     messagingSenderId: '256774816282',
     projectId: 'agente-caminha',
+    databaseURL: 'https://agente-caminha-default-rtdb.firebaseio.com',
     storageBucket: 'agente-caminha.firebasestorage.app',
   );
+
 }

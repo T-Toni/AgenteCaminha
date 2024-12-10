@@ -9,6 +9,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.47"
+  a_star_algorithm:
+    dependency: transitive
+    description:
+      name: a_star_algorithm
+      sha256: c9a92079331f8229f572718ed12c25b0e3adf3570318becfa689f5554e6ffd30
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.2"
+  archive:
+    dependency: transitive
+    description:
+      name: archive
+      sha256: cb6a278ef2dbb298455e1a713bda08524a175630ec643a242c399c932a0a1f7d
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.6.1"
   async:
     dependency: transitive
     description:
@@ -17,6 +33,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  bonfire:
+    dependency: "direct main"
+    description:
+      name: bonfire
+      sha256: "6bc27a32c84408ea0606825c308ad4a147e7327a732cee8775b676de9c0c58a3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.12.3"
   boolean_selector:
     dependency: transitive
     description:
@@ -41,6 +65,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  cloud_firestore:
+    dependency: "direct main"
+    description:
+      name: cloud_firestore
+      sha256: "852c1a14399be76c71a881d2475392393f2ceef77c0859405a6bcac5ec8c0221"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.5.1"
+  cloud_firestore_platform_interface:
+    dependency: transitive
+    description:
+      name: cloud_firestore_platform_interface
+      sha256: "69f0baeb7ac0577946f82991075b18133fd81441aeda487e41fb5692958117cd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.5.1"
+  cloud_firestore_web:
+    dependency: transitive
+    description:
+      name: cloud_firestore_web
+      sha256: ff65ee2f8caafb1bcba3133666d5ee00848f94c677900a368cad593982ef8ba8
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.3.5"
   collection:
     dependency: transitive
     description:
@@ -49,6 +97,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
+  crypto:
+    dependency: transitive
+    description:
+      name: crypto
+      sha256: "1e445881f28f22d6140f181e07737b22f1e099a5e1ff94b0af2f9e4a463f4855"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.6"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -65,14 +121,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.1"
-  firebase:
-    dependency: "direct main"
-    description:
-      name: firebase
-      sha256: cbff777369d19bd0535ccca0005518172953394246620ff8c1021072299d452d
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.0.3"
   firebase_auth:
     dependency: "direct main"
     description:
@@ -121,6 +169,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.18.2"
+  flame:
+    dependency: transitive
+    description:
+      name: flame
+      sha256: "79133dc46a3ff870950f41d0dc1598414e7bd7ae2c29bd9f0a9de208d9a70cb7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.18.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -148,10 +204,10 @@ packages:
     dependency: transitive
     description:
       name: http
-      sha256: "5895291c13fa8a3bd82e76d5627f69e0d85ca6a30dcac95c4ea19a5d555879c2"
+      sha256: b9c29a161230ee03d3ccf545097fccd9b87a5264228c5d348202e0f0c28f9010
       url: "https://pub.dev"
     source: hosted
-    version: "0.13.6"
+    version: "1.2.2"
   http_parser:
     dependency: transitive
     description:
@@ -160,14 +216,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
-  js:
-    dependency: transitive
-    description:
-      name: js
-      sha256: f2c445dce49627136094980615a031419f7f3eb393237e4ecd97ac15dea343f3
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.6.7"
   leak_tracker:
     dependency: transitive
     description:
@@ -232,6 +280,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  ordered_set:
+    dependency: transitive
+    description:
+      name: ordered_set
+      sha256: "1bfaaaee0419e43ecc9eaebd410eb4bd5039657b72011de75ff3e2915c9aac60"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.3"
   path:
     dependency: transitive
     description:
@@ -309,6 +365,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.2"
+  tiledjsonreader:
+    dependency: transitive
+    description:
+      name: tiledjsonreader
+      sha256: "5d5731f17830f48ae8f926ddb2d81a5b7890d6047f78e35a13a29da9834aee32"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.1"
   typed_data:
     dependency: transitive
     description:

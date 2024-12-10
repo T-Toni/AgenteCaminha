@@ -36,6 +36,7 @@ class _HomeState extends State<Home> {
     personagens.move(marcado!, index);
     marcado = null;
     estadosGrid.fillRange(0, 15, 0);
+    salvarPosicoes();
     }
   }
 
@@ -44,15 +45,15 @@ class _HomeState extends State<Home> {
     return personagem.isNotEmpty ? personagem.first : null;
   }
 
+  void salvarPosicoes() {
+    personagens.salvarPosicoesNoFirebase(personagensEscolhidos);
+  }
+
   @override
   Widget build(BuildContext context) {
     personagens = context.watch<PersonagensRepository>();
 
-    for (Personagem personagem in personagens.lista){
-      if (personagem.checado == true){
-        personagensEscolhidos.add(personagem);
-      }
-    }
+    personagensEscolhidos = personagens.getPersonagensEscolhidos();
     
     return Column(
       mainAxisAlignment: MainAxisAlignment.end, // Posiciona a grid no final da tela
@@ -92,6 +93,13 @@ class _HomeState extends State<Home> {
             },
           ),
         ),
+        /*
+        ElevatedButton(
+            onPressed:
+                salvarPosicoes, // Botão para salvar as posições no Firebase
+            child: const Text('Salvar Posições'),
+        )
+        */
       ],
     );
   }

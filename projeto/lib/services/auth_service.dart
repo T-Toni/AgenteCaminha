@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +9,8 @@ class AuthException implements Exception{
 }
 
 class AuthService extends ChangeNotifier{
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore db = FirebaseFirestore.instance;
   User? usuario;
   bool isLoading = true;
 
@@ -26,7 +28,6 @@ class AuthService extends ChangeNotifier{
 
   _getUser(){
     usuario = _auth.currentUser;
-    isLoading = false;
     notifyListeners();
   }
 
@@ -35,11 +36,17 @@ class AuthService extends ChangeNotifier{
     notifyListeners();
   }
 
-  registrar(String email, String senha) async {
+  _loaded(){
+    isLoading = false;
+    notifyListeners();
+  }
+
+  registrar(String nome, String email, String senha) async {
     _loading();
     try{
       await _auth.createUserWithEmailAndPassword(email: email, password: senha);
       _getUser();
+      await salvarInformacoes(nome, email);
     } on FirebaseAuthException catch (e){
       if (e.code == 'weak-password'){
         throw AuthException('A senha é muito fraca');
@@ -47,6 +54,7 @@ class AuthService extends ChangeNotifier{
         throw AuthException('Este email já esta cadastrado');
       }
     }
+    _loaded();
   }
 
   login(String email, String senha) async {
@@ -61,11 +69,35 @@ class AuthService extends ChangeNotifier{
         throw AuthException('Senha incorreta. Tente novamente');
       }
     }
+    _loaded();
   }
 
   logout() async{
     _loading();
     await _auth.signOut();
     _getUser();
+    _loaded();
   }
+
+  Future<void> salvarInformacoes(String name, String email) async {
+    try {
+      WriteBatch batch = db.batch();
+      CollectionReference personagensRef = db.collection('users');
+
+      DocumentReference docRef = personagensRef.doc(usuario?.uid);
+      batch.set(docRef, {
+        'nome': name,
+        'email': email
+      });
+
+      await batch.commit();
+    } catch (e) {
+      print("Erro ao salvar posições no Firebase: $e");
+    }
+  }
+
+  String? getCurrentUserID(){
+    return usuario?.uid;
+  }
+
 }

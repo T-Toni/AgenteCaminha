@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:projeto/repositories/usuarios_repository.dart';
 import 'package:projeto/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
@@ -12,16 +11,14 @@ class SigninScreen extends StatefulWidget {
 }
 class _SigninScreenState extends State<SigninScreen>{
   
-  //final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  late UsuariosRepository usuarios;
-
   registrar() async{
     try {
-      await context.read<AuthService>().registrar(_emailController.text, _passwordController.text);
+      await context.read<AuthService>().registrar(_nameController.text, _emailController.text, _passwordController.text);
     } on AuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
     }
@@ -29,8 +26,6 @@ class _SigninScreenState extends State<SigninScreen>{
 
   @override
   Widget build(BuildContext context) {
-
-    usuarios = context.watch<UsuariosRepository>();
 
     return Scaffold(
       appBar: AppBar(
@@ -44,7 +39,6 @@ class _SigninScreenState extends State<SigninScreen>{
             child : Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                /*
                 TextFormField(
                   controller: _nameController,
                   decoration: const InputDecoration(
@@ -59,7 +53,6 @@ class _SigninScreenState extends State<SigninScreen>{
                   }
                 ),
                 const SizedBox(height: 16),
-                */
                 TextFormField(
                   controller: _emailController,
                   decoration: const InputDecoration(
