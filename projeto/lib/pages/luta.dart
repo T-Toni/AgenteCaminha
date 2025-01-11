@@ -61,10 +61,10 @@ class _LutaState extends State<Luta> {
         ],
 
         map: WorldMapByTiled(
-          WorldMapReader.fromAsset("map.json")
+          WorldMapReader.fromAsset("map.json"),
         ),
 
-        components: decorations,
+        components: [Goblin(Vector2(100, 100), "mago.png")],
 
         cameraConfig: CameraConfig(
           moveOnlyMapArea: true,
@@ -88,10 +88,29 @@ class Goblin extends SimpleAlly {
           position: position, // required
           size: Vector2(32.0,32.0), // required
           life: 100,
-          speed: 100,
+          speed: 10,
           initDirection: Direction.right,
-          animation: CharacterSpritesheet(fileName: 'mago.png').getAnimation()
-      );
+          animation: SimpleDirectionAnimation(
+            idleRight: SpriteAnimation.load(
+              "bola1.png",
+              SpriteAnimationData.sequenced(
+                amount: 1,
+                stepTime: 0.1,
+                textureSize: Vector2(32, 32),
+                texturePosition: Vector2(0, 0)
+              ),
+            ),
+            runRight: SpriteAnimation.load(
+              "bola1.png",
+              SpriteAnimationData.sequenced(
+                amount: 1,
+                stepTime: 0.1,
+                textureSize: Vector2(32, 32),
+                texturePosition: Vector2(0, 0)
+              ),
+            ),
+          )
+    );
 
     @override
     void update(double dt) {
@@ -100,7 +119,8 @@ class Goblin extends SimpleAlly {
 
     @override
     void render(Canvas canvas) {
-      // canvas.drawRect(Rect.fromLTWH(0, 0, width, height), paint);
+      canvas.drawRect(Rect.fromLTWH(0, 0, width, height), paint);
+      moveToPosition(Vector2(200,200));
       super.render(canvas);
     }
 }

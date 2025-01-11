@@ -6,45 +6,43 @@ import 'package:projeto/models/personagem.dart';
 
 class PersonagensRepository extends ChangeNotifier {
   final List<Personagem> _lista = [
-    Personagem(id: '1', nome: 'guerreiro', imagem: 'assets/images/bola1.png', posicao: 0),
-    Personagem(id: '2', nome: 'curandeira', imagem: 'assets/images/bola2.png', posicao: 1),
-    Personagem(id: '3', nome: 'mago', imagem: 'assets/images/mago.png', posicao: 2),
+    Personagem(id: '1', nome: 'Guerreiro', imagem: 'assets/images/guerreiro.png', posicao: 0, vida: 0, dano: 0, velocidade: 0),
+    Personagem(id: '2', nome: 'Curandeira', imagem: 'assets/images/curandeira.png', posicao: 0, vida: 0, dano: 0, velocidade: 0),
+    Personagem(id: '3', nome: 'Mago', imagem: 'assets/images/mago.png', posicao: 0, vida: 0, dano: 0, velocidade: 0),
+    //Personagem(id: '4', nome: 'padre', imagem: 'assets/images/padre.png', posicao: 0, vida: 0, dano: 0, velocidade: 0),
   ];
 
+  final List<Personagem> _listaObtidos = [];
+
   late FirebaseFirestore db = FirebaseFirestore.instance;
-  late FirebaseAuth _auth = FirebaseAuth.instance;
+  late final FirebaseAuth _auth = FirebaseAuth.instance;
 
   UnmodifiableListView<Personagem> get lista => UnmodifiableListView(_lista);
+  UnmodifiableListView<Personagem> get listaObtidos => UnmodifiableListView(_listaObtidos);
 
   PersonagensRepository(){
     carregarPersonagens().then((personagens){
-      List<Personagem> personagensToUpdate = [];
-      for (Personagem personagem in personagens){
-        var personagemLocal = lista.where((p) => p.id == personagem.id).first;
-        _updateValuesPersonagem(personagemLocal, personagem);
-        personagensToUpdate.add(personagemLocal);
-      }
-      saveAll(personagensToUpdate);
+      saveAll(personagens);
     });
     notifyListeners();
   }
 
-  void _updateValuesPersonagem(Personagem personagemLocal, Personagem personagemDB){
-    personagemLocal.checado = personagemDB.checado;
-    personagemLocal.posicao = personagemDB.posicao;
+  void obterPersonagem(String id){
+    Personagem personagemNovo = lista.where((p) => p.id == id).first;
+    saveAll([personagemNovo]);
   }
 
   // Função para salvar todos os personagens na lista
   void saveAll(List<Personagem> personagens) {
     for (var personagem in personagens) {
-      if (!_lista.contains(personagem)) _lista.add(personagem);
+      if (!_listaObtidos.contains(personagem)) _listaObtidos.add(personagem);
     }
     notifyListeners();
   }
 
   // Função para remover personagem da lista
   void remove(Personagem personagem) {
-    _lista.remove(personagem);
+    _listaObtidos.remove(personagem);
     notifyListeners();
   }
 
@@ -55,7 +53,7 @@ class PersonagensRepository extends ChangeNotifier {
   }
 
   // Função para salvar personagens no Firestore
-  Future<void> salvarPosicoesNoFirebase(List<Personagem> personagensEscolhidos) async {
+  Future<void> salvarPersonagemNoFirebase(List<Personagem> personagensEscolhidos) async {
     try {
       WriteBatch batch = db.batch();
       CollectionReference personagensRef = db.collection('users').doc(_auth.currentUser?.uid).collection('personagens');
@@ -68,6 +66,10 @@ class PersonagensRepository extends ChangeNotifier {
           'imagem': personagem.imagem,
           'posicao': personagem.posicao,
           'checado' : personagem.checado,
+          'vida' : personagem.vida,
+          'dano' : personagem.dano,
+          'velocidade' : personagem.velocidade,
+          'nivel' : personagem.nivel,
         });
       }
 
@@ -91,6 +93,10 @@ class PersonagensRepository extends ChangeNotifier {
           imagem: data['imagem'] ?? '',
           posicao: data['posicao'] ?? 0,
           checado: data['checado'] ?? false,
+          vida: data['vida'] ?? 0,
+          dano: data['dano'] ?? 0,
+          velocidade: data['velocidade'] ?? 0,
+          nivel: data['nivel'] ?? 1,
         );
       }).toList();
       return personagensCarregados;
@@ -103,7 +109,7 @@ class PersonagensRepository extends ChangeNotifier {
   List<Personagem> getPersonagensEscolhidos(){
     List<Personagem> personagensEscolhidos = [];
 
-    for (Personagem personagem in lista){
+    for (Personagem personagem in listaObtidos){
       if (personagem.checado == true){
         personagensEscolhidos.add(personagem);
       }

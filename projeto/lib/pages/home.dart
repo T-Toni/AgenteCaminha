@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/models/personagem.dart';
+import 'package:projeto/pages/recompensas.dart';
 import 'package:projeto/repositories/personagens_repository.dart';
 import 'package:provider/provider.dart';
 
@@ -46,7 +47,7 @@ class _HomeState extends State<Home> {
   }
 
   void salvarPosicoes() {
-    personagens.salvarPosicoesNoFirebase(personagensEscolhidos);
+    personagens.salvarPersonagemNoFirebase(personagensEscolhidos);
   }
 
   @override
@@ -59,6 +60,19 @@ class _HomeState extends State<Home> {
       mainAxisAlignment: MainAxisAlignment.end, // Posiciona a grid no final da tela
       children: [
         Expanded(child: Container()),
+        Center(
+          child: ElevatedButton(
+            child: Text('Ganhar recompensas'),
+            onPressed: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TelaRecompensas(),
+                  ),
+              )
+            },
+          )
+        ),
         Container(
           height: 250, // Altura da grid 3 linhas
           padding: const EdgeInsets.all(8.0),
