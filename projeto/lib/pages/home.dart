@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:projeto/models/personagem.dart';
 import 'package:projeto/pages/recompensas.dart';
 import 'package:projeto/repositories/personagens_repository.dart';
 import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
+import 'dart:async';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -20,9 +23,14 @@ class _HomeState extends State<Home> {
   Personagem? marcado;
 
   List<Personagem> personagensEscolhidos = [];
-
+  
+  late MapController mapController;
   bool caminhando = false;
   double kmcaminhados = 0.0;
+  List<GeoPoint> caminhoPercorrido = [];
+  Position? ultimaPosicao;
+  StreamSubscription<Position>? positionStream;
+
 
   void marcarPersonagem(Personagem personagem, int index) {
     setState(() {
@@ -54,19 +62,152 @@ class _HomeState extends State<Home> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    mapController = MapController.withUserPosition(
+        trackUserLocation: UserTrackingOption(
+           enableTracking: true,
+           unFollowUser: false,
+        )
+    );
+    _determinePosition();
+  }
+
+  Future<void> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Verifica se o serviço de localização está habilitado
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Serviço de localização não habilitado, não pode continuar
+      return Future.error('Serviço de localização está desabilitado.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissão de localização negada, não pode continuar
+        return Future.error('Permissão de localização negada.');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissão de localização negada permanentemente, não pode continuar
+      return Future.error('Permissão de localização negada permanentemente.');
+    }
+
+    // Obtém a posição atual do usuário
+    Position position = await Geolocator.getCurrentPosition();
+    print('Posição atual: ${position.latitude}, ${position.longitude}');
+
+    /*
+    await mapController.moveTo(
+      GeoPoint(latitude: position.latitude, longitude: position.longitude),
+    );
+    */
+  }
+
+  void _startTracking() {
+    if (positionStream != null) {
+      positionStream!.cancel();
+    }
+
+    positionStream = Geolocator.getPositionStream(
+      locationSettings: LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 1, // Atualiza a cada 10 metros
+      ),
+    ).listen((Position position) async {
+      if (mounted) {
+        setState(() {
+          caminhoPercorrido.add(GeoPoint(
+            latitude: position.latitude,
+            longitude: position.longitude,
+          ));
+          if (ultimaPosicao != null) {
+            kmcaminhados += Geolocator.distanceBetween(
+              ultimaPosicao!.latitude,
+              ultimaPosicao!.longitude,
+              position.latitude,
+              position.longitude,
+            ) / 1000; // Converte para km
+          }
+          ultimaPosicao = position;
+        });
+        if (caminhoPercorrido.length > 1) {
+          mapController.clearAllRoads();
+          await mapController.drawRoad(
+            caminhoPercorrido[caminhoPercorrido.length - 2],
+            caminhoPercorrido.last,
+            roadType: RoadType.foot,
+            roadOption: RoadOption(
+              roadColor: const Color.fromARGB(255, 95, 2, 87),
+              roadWidth: 10,
+            ),
+        );
+      }
+
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    positionStream?.cancel();
+    mapController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     personagens = context.watch<PersonagensRepository>();
 
     personagensEscolhidos = personagens.getPersonagensEscolhidos();
-    
+
     return Column(
-      mainAxisAlignment: MainAxisAlignment.end, // Posiciona a grid no final da tela
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Posiciona a grid no final da tela
       children: [
-        Expanded(child: Container()),
+        //Expanded(child: Container()),
+        Container(
+          height: 250,
+          child: OSMFlutter( 
+            controller: mapController,
+            osmOption: OSMOption(
+                userTrackingOption: UserTrackingOption(
+                enableTracking: true,
+                unFollowUser: false,
+              ),
+              zoomOption: ZoomOption(
+                initZoom: 18,
+                minZoomLevel: 16,
+                maxZoomLevel: 19,
+                stepZoom: 1.0,
+              ),
+              userLocationMarker: UserLocationMaker(
+                personMarker: MarkerIcon(
+                  icon: Icon(
+                    Icons.person,
+                    color: Colors.purple,
+                    size: 40,
+                  ),
+                ),
+                directionArrowMarker: MarkerIcon(
+                  icon: Icon(
+                    Icons.person,
+                    color: Colors.purple,
+                    size: 40,
+                  ),
+                ),
+              ),
+            )
+          )
+        ),
         Center(
           child: 
           Text(caminhando?
-            '$kmcaminhados km caminhados' : 'aquecendo para a caminhada',
+            '${kmcaminhados.toStringAsFixed(3)} km caminhados' : 'aquecendo para a caminhada',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -83,17 +224,53 @@ class _HomeState extends State<Home> {
                 MaterialPageRoute(
                     builder: (context) => TelaRecompensas(kmcaminhados),
                   ),
-              ).then((result){
+              ).then((result) async {
+
+                List<GeoPoint> geoPoints = await mapController.geopoints;
+                mapController.removeMarkers(geoPoints);
+                mapController.clearAllRoads();
+                if(mounted){
+                  setState(() {
+                    caminhoPercorrido.clear();
+                    kmcaminhados = 0.0;
+                    ultimaPosicao = null;
+                    positionStream?.cancel();
+                  });
+                }
                 setState(() {
                   caminhando = false;
+                  caminhoPercorrido.clear();
+                  kmcaminhados = 0.0;
+                  ultimaPosicao = null;
                 });
               }
               )
-            }: () => {
+            }: () async {
               //iniciar caminhada
+              try {
+                
+                Position position = await Geolocator.getCurrentPosition();
+
+                print(position);
+
+                await mapController.addMarker(
+                  GeoPoint(latitude: position.latitude, longitude: position.longitude),
+                  markerIcon: MarkerIcon(
+                    icon: Icon(
+                      Icons.pin_drop,
+                      color: Colors.purple,
+                      size: 20,
+                    ),
+                  ),
+                );
+                print('Marcador adicionado com sucesso');
+              } catch (e) {
+                print('Erro ao adicionar marcador: $e');
+              }
               setState(() {
                 caminhando = true;
-              })
+              });
+              _startTracking();
             },
           )
         ),
