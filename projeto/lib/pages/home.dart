@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:projeto/models/personagem.dart';
@@ -8,7 +10,9 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  final ValueNotifier<bool> caminhandoNotifier;
+  
+  Home({super.key, required this.caminhandoNotifier});
 
   @override
   State<Home> createState() => _HomeState();
@@ -25,12 +29,10 @@ class _HomeState extends State<Home> {
   List<Personagem> personagensEscolhidos = [];
   
   late MapController mapController;
-  bool caminhando = false;
   double kmcaminhados = 0.0;
   List<GeoPoint> caminhoPercorrido = [];
   Position? ultimaPosicao;
   StreamSubscription<Position>? positionStream;
-
 
   void marcarPersonagem(Personagem personagem, int index) {
     setState(() {
@@ -136,14 +138,15 @@ class _HomeState extends State<Home> {
           }
           ultimaPosicao = position;
         });
-        if (caminhoPercorrido.length > 1) {
-          mapController.clearAllRoads();
+        if ((caminhoPercorrido.length > 1) && (caminhoPercorrido[caminhoPercorrido.length - 2].latitude != caminhoPercorrido.last.latitude || caminhoPercorrido[caminhoPercorrido.length - 2].longitude != caminhoPercorrido.last.longitude)) {
+          //mapController.clearAllRoads();
+
           await mapController.drawRoad(
             caminhoPercorrido[caminhoPercorrido.length - 2],
             caminhoPercorrido.last,
             roadType: RoadType.foot,
             roadOption: RoadOption(
-              roadColor: const Color.fromARGB(255, 95, 2, 87),
+              roadColor: Color.fromARGB(255, Random().nextInt(256), Random().nextInt(256), Random().nextInt(256)),
               roadWidth: 10,
             ),
         );
@@ -188,14 +191,14 @@ class _HomeState extends State<Home> {
               userLocationMarker: UserLocationMaker(
                 personMarker: MarkerIcon(
                   icon: Icon(
-                    Icons.person,
+                    Icons.arrow_forward,
                     color: Colors.purple,
                     size: 40,
                   ),
                 ),
                 directionArrowMarker: MarkerIcon(
                   icon: Icon(
-                    Icons.person,
+                    Icons.arrow_forward,
                     color: Colors.purple,
                     size: 40,
                   ),
@@ -206,8 +209,8 @@ class _HomeState extends State<Home> {
         ),
         Center(
           child: 
-          Text(caminhando?
-            '${kmcaminhados.toStringAsFixed(3)} km caminhados' : 'aquecendo para a caminhada',
+          Text(widget.caminhandoNotifier.value?
+            '${kmcaminhados.toStringAsFixed(3)} Km caminhados' : 'Aquecendo para a caminhada...',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -217,15 +220,16 @@ class _HomeState extends State<Home> {
         ),
         Center(
           child: ElevatedButton(
-            child: Text(caminhando? 'Terminar caminhada e ganhar recompensas' : 'Iniciar caminhada'),
-            onPressed: caminhando? () => {
+            child: Text(widget.caminhandoNotifier.value? 'Terminar caminhada e ganhar recompensas' : 'Iniciar caminhada'),
+            onPressed: widget.caminhandoNotifier.value? () => {
+              // ENTRANDO NA TELA DE RECOMPENSAS
               Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => TelaRecompensas(kmcaminhados),
                   ),
               ).then((result) async {
-
+                // VOLTANDO DA TELA DE RECOMPENSAS
                 List<GeoPoint> geoPoints = await mapController.geopoints;
                 mapController.removeMarkers(geoPoints);
                 mapController.clearAllRoads();
@@ -238,7 +242,7 @@ class _HomeState extends State<Home> {
                   });
                 }
                 setState(() {
-                  caminhando = false;
+                  widget.caminhandoNotifier.value = false;
                   caminhoPercorrido.clear();
                   kmcaminhados = 0.0;
                   ultimaPosicao = null;
@@ -246,7 +250,7 @@ class _HomeState extends State<Home> {
               }
               )
             }: () async {
-              //iniciar caminhada
+              // INICIANDO A CAMINHADA
               try {
                 
                 Position position = await Geolocator.getCurrentPosition();
@@ -267,9 +271,11 @@ class _HomeState extends State<Home> {
               } catch (e) {
                 print('Erro ao adicionar marcador: $e');
               }
-              setState(() {
-                caminhando = true;
-              });
+              if (mounted){
+                setState(() {
+                  widget.caminhandoNotifier.value = true;
+                });
+              }
               _startTracking();
             },
           )

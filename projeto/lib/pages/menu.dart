@@ -15,11 +15,20 @@ class Menu extends StatefulWidget {
 
 class _MenuState extends State<Menu> {
   int _selectedIndex = 1;
+  final ValueNotifier<bool> caminhandoNotifier = ValueNotifier<bool>(false);
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (!caminhandoNotifier.value) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+    else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        //SnackBar(content: Text('Oi $nomeUsuario, suas configurações ainda não foram liberadas!')),
+        SnackBar(content: Text('Termine a sua caminhada para trocar de tela.')),
+      );
+    }
   }
 
   void _onConfigTapped() {
@@ -28,15 +37,15 @@ class _MenuState extends State<Menu> {
       //String nomeUsuario = usuarios.userLoggedIn.nome;
       ScaffoldMessenger.of(context).showSnackBar(
         //SnackBar(content: Text('Oi $nomeUsuario, suas configurações ainda não foram liberadas!')),
-        SnackBar(content: Text('Logout com sucesso')),
+        SnackBar(content: Text('Logout com sucesso.')),
       );
     });
   }
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    Personagens(),
-    Home(),
-    Luta(),
+  static List<Widget>  _widgetOptions(ValueNotifier<bool> caminhandoNotifier) => <Widget>[
+    const Personagens(),
+    Home(caminhandoNotifier: caminhandoNotifier),
+    const Luta(),
   ];
   
   @override
@@ -55,33 +64,38 @@ class _MenuState extends State<Menu> {
           ), //tipo um this
       ),
       body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+        child: _widgetOptions(caminhandoNotifier).elementAt(_selectedIndex),
       ),
       
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,   
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.backpack),
-            label: 'Personagens',
-            //backgroundColor: Color.fromARGB(255, 24, 59, 92),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-            //backgroundColor: Color.fromARGB(255, 24, 59, 92),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.handshake),
-            label: 'Luta',
-            //backgroundColor: Color.fromARGB(255, 24, 59, 92),
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        //selectedItemColor: const Color.fromARGB(255, 24, 59, 92),
-        onTap: _onItemTapped,
+      bottomNavigationBar: ValueListenableBuilder<bool>(
+        valueListenable: caminhandoNotifier,
+        builder: (context, caminhando, child) {
+          return BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.backpack),
+                label: 'Personagens',
+                //backgroundColor: Color.fromARGB(255, 24, 59, 92),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+                //backgroundColor: Color.fromARGB(255, 24, 59, 92),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.handshake),
+                label: 'Luta',
+                //backgroundColor: Color.fromARGB(255, 24, 59, 92),
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            //selectedItemColor: const Color.fromARGB(255, 24, 59, 92),
+            onTap: _onItemTapped,
+            type: caminhando ? BottomNavigationBarType.shifting : BottomNavigationBarType.fixed,
+          );
+        },
       ),
-    
     );
   }
 }
