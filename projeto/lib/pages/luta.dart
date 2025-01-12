@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:bonfire/bonfire.dart';
 import 'package:projeto/models/personagem.dart';
-import 'package:projeto/utils/character_spritesheet.dart';
 import 'package:projeto/repositories/personagens_repository.dart';
 import 'package:provider/provider.dart';
 

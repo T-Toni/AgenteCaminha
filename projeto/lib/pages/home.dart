@@ -21,6 +21,9 @@ class _HomeState extends State<Home> {
 
   List<Personagem> personagensEscolhidos = [];
 
+  bool caminhando = false;
+  double kmcaminhados = 0.0;
+
   void marcarPersonagem(Personagem personagem, int index) {
     setState(() {
       estadosGrid[index] = (estadosGrid[index] + 1) % 2; // Alterna entre 0 e 1
@@ -61,15 +64,36 @@ class _HomeState extends State<Home> {
       children: [
         Expanded(child: Container()),
         Center(
+          child: 
+          Text(caminhando?
+            '$kmcaminhados km caminhados' : 'aquecendo para a caminhada',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        Center(
           child: ElevatedButton(
-            child: Text('Ganhar recompensas'),
-            onPressed: () => {
+            child: Text(caminhando? 'Terminar caminhada e ganhar recompensas' : 'Iniciar caminhada'),
+            onPressed: caminhando? () => {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => TelaRecompensas(),
+                    builder: (context) => TelaRecompensas(kmcaminhados),
                   ),
+              ).then((result){
+                setState(() {
+                  caminhando = false;
+                });
+              }
               )
+            }: () => {
+              //iniciar caminhada
+              setState(() {
+                caminhando = true;
+              })
             },
           )
         ),

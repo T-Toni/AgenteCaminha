@@ -19,12 +19,26 @@ class _PersonagensState extends State<Personagens> {
   {
     return CheckboxListTile(
       title: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        Image.asset(
+          personagem.imagem,
+          height: 35,
+          width: 35,
+          fit: BoxFit.cover,
+        ),
+        SizedBox(width: 10),
         Text(
           personagem.nome,
           style: TextStyle(
             fontSize: 24,
+          ),
+        ),
+        SizedBox(width: 10),
+        Text(
+          "lvl ${personagem.nivel}",
+          style: TextStyle(
+            fontSize: 20,
           ),
         ),
         IconButton(
