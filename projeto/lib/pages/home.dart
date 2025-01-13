@@ -172,7 +172,6 @@ class _HomeState extends State<Home> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Posiciona a grid no final da tela
       children: [
-        //Expanded(child: Container()),
         Container(
           height: 250,
           child: OSMFlutter( 
@@ -191,16 +190,16 @@ class _HomeState extends State<Home> {
               userLocationMarker: UserLocationMaker(
                 personMarker: MarkerIcon(
                   icon: Icon(
-                    Icons.arrow_forward,
+                    Icons.swipe_up_alt,
                     color: Colors.purple,
-                    size: 40,
+                    size: 60,
                   ),
                 ),
                 directionArrowMarker: MarkerIcon(
                   icon: Icon(
-                    Icons.arrow_forward,
+                    Icons.swipe_up_alt,
                     color: Colors.purple,
-                    size: 40,
+                    size: 60,
                   ),
                 ),
               ),
@@ -261,7 +260,7 @@ class _HomeState extends State<Home> {
                   GeoPoint(latitude: position.latitude, longitude: position.longitude),
                   markerIcon: MarkerIcon(
                     icon: Icon(
-                      Icons.pin_drop,
+                      Icons.place,
                       color: Colors.purple,
                       size: 20,
                     ),
@@ -314,13 +313,6 @@ class _HomeState extends State<Home> {
             },
           ),
         ),
-        /*
-        ElevatedButton(
-            onPressed:
-                salvarPosicoes, // Botão para salvar as posições no Firebase
-            child: const Text('Salvar Posições'),
-        )
-        */
       ],
     );
   }

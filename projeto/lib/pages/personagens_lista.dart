@@ -82,8 +82,13 @@ class _PersonagensState extends State<Personagens> {
     personagens = context.watch<PersonagensRepository>();
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Column( // Use Column para empilhar widgets
-      children: personagens.listaObtidos.map((personagem) => LI(personagem, colorScheme)).toList(),
+    return Scaffold(
+      body: ListView(
+        children: personagens.listaObtidos
+            .map((personagem) => LI(personagem, colorScheme))
+            .toList(),
+      ),
+      backgroundColor: colorScheme.inversePrimary,
     );
 
   }

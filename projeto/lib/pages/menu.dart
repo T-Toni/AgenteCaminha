@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:projeto/pages/home.dart';
 import 'package:projeto/pages/luta.dart';
 import 'package:projeto/pages/personagens_lista.dart';
@@ -17,6 +18,39 @@ class _MenuState extends State<Menu> {
   int _selectedIndex = 1;
   final ValueNotifier<bool> caminhandoNotifier = ValueNotifier<bool>(false);
 
+  @override
+  void initState() {
+    super.initState();
+    _checkLocationService();
+  }
+  Future<void> _checkLocationService() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      _showLocationServiceDialog();
+    }
+  }
+
+  void _showLocationServiceDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Serviço de Localização Desativado'),
+          content: Text('Por favor, ative o serviço de localização para usar este aplicativo.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Geolocator.openLocationSettings();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  
   void _onItemTapped(int index) {
     if (!caminhandoNotifier.value) {
       setState(() {
@@ -24,6 +58,7 @@ class _MenuState extends State<Menu> {
       });
     }
     else{
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         //SnackBar(content: Text('Oi $nomeUsuario, suas configurações ainda não foram liberadas!')),
         SnackBar(content: Text('Termine a sua caminhada para trocar de tela.')),

@@ -117,7 +117,7 @@ class Recompensa {
     required this.nome,
     required this.imagem,
     required this.chance,
-    this.levelup = 0,
+    required this.levelup,
   });
 
   void darRecompensa(UnmodifiableListView<Personagem> personagens){
