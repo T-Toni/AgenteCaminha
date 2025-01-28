@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/app.dart';
+import 'package:projeto/repositories/user_info_repository.dart';
 import 'package:projeto/utils/firebase_options.dart';
 import 'package:projeto/repositories/personagens_repository.dart';
 import 'package:projeto/services/auth_service.dart';
@@ -20,6 +21,7 @@ void main() async{
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthService()),
+        ChangeNotifierProvider(create: (context) => UserInfoRepository()),
         ChangeNotifierProvider(create: (context) => PersonagensRepository()),
       ],
       child: const MyApp(),

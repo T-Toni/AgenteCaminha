@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto/models/personagem.dart';
 import 'package:projeto/pages/detalhes_personagem.dart';
 import 'package:projeto/repositories/personagens_repository.dart';
+import 'package:projeto/repositories/user_info_repository.dart';
 import 'package:provider/provider.dart';
 
 class Personagens extends StatefulWidget {
@@ -13,7 +15,7 @@ class Personagens extends StatefulWidget {
 class _PersonagensState extends State<Personagens> {
 
   late PersonagensRepository personagens;
-
+  late UserInfoRepository userInfo;
 
   CheckboxListTile LI(Personagem personagem, ColorScheme colorScheme)
   {
@@ -80,13 +82,33 @@ class _PersonagensState extends State<Personagens> {
   Widget build(BuildContext context) {
 
     personagens = context.watch<PersonagensRepository>();
+    userInfo = context.watch<UserInfoRepository>();
+
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      body: ListView(
-        children: personagens.listaObtidos
-            .map((personagem) => LI(personagem, colorScheme))
-            .toList(),
+      body: Column(
+      children: [
+        if(userInfo.qntPontos > 0)
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            '(${userInfo.qntPontos} pontos restantes)',
+            style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.normal,
+            color: Colors.white,
+            ),
+          ),
+        ),
+        Expanded(
+          child: ListView(
+            children: personagens.listaObtidos
+              .map((personagem) => LI(personagem, colorScheme))
+              .toList(),
+          ),
+        ),
+      ],
       ),
       backgroundColor: colorScheme.inversePrimary,
     );

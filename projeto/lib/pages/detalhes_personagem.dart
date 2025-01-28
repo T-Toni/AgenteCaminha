@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/models/personagem.dart';
+import 'package:projeto/repositories/user_info_repository.dart';
+import 'package:provider/provider.dart';
 
 class DetalhesPersonagemScreen extends StatefulWidget {
   final Personagem personagem;
@@ -13,6 +15,9 @@ class DetalhesPersonagemScreen extends StatefulWidget {
 }
 
 class _DetalhesPersonagemScreenState extends State<DetalhesPersonagemScreen> {
+
+  late UserInfoRepository userInfo;
+
   // Calcula o total de pontos distribuídos
   int get pontosDistribuidos =>
       widget.personagem.vida +
@@ -21,10 +26,12 @@ class _DetalhesPersonagemScreenState extends State<DetalhesPersonagemScreen> {
 
   // Verifica se ainda há pontos disponíveis para distribuir
   bool get podeAdicionarPontos =>
-      pontosDistribuidos < widget.personagem.nivel;
+      userInfo.qntPontos > 0;
 
   @override
   Widget build(BuildContext context) {
+
+    userInfo = context.watch<UserInfoRepository>();
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
@@ -67,6 +74,14 @@ class _DetalhesPersonagemScreenState extends State<DetalhesPersonagemScreen> {
                         color: Colors.white,
                       ),
                     ),
+                    if (podeAdicionarPontos)
+                      Text(
+                        '(${userInfo.qntPontos} pontos disponíveis)',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -78,6 +93,8 @@ class _DetalhesPersonagemScreenState extends State<DetalhesPersonagemScreen> {
                 onIncrement: () {
                   setState(() {
                     widget.personagem.vida++;
+                    widget.personagem.nivel++;
+                    userInfo.removerPontos(1);
                   });
                 },
               ),
@@ -88,6 +105,8 @@ class _DetalhesPersonagemScreenState extends State<DetalhesPersonagemScreen> {
                 onIncrement: () {
                   setState(() {
                     widget.personagem.dano++;
+                    widget.personagem.nivel++;
+                    userInfo.removerPontos(1);
                   });
                 },
               ),
@@ -98,6 +117,8 @@ class _DetalhesPersonagemScreenState extends State<DetalhesPersonagemScreen> {
                 onIncrement: () {
                   setState(() {
                     widget.personagem.velocidade++;
+                    widget.personagem.nivel++;
+                    userInfo.removerPontos(1);
                   });
                 },
               ),

@@ -1,8 +1,6 @@
-import 'dart:collection';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:projeto/models/personagem.dart';
-import 'package:projeto/repositories/personagens_repository.dart';
+import 'package:projeto/repositories/user_info_repository.dart';
 import 'package:provider/provider.dart';
 
 class TelaRecompensas extends StatefulWidget {
@@ -14,12 +12,12 @@ class TelaRecompensas extends StatefulWidget {
 
 class _TelaRecompensasState extends State<TelaRecompensas> {
 
-  late PersonagensRepository personagens;
+  late UserInfoRepository userInfo;
   
   List<Recompensa> recompensasPossiveis = [
-    Recompensa(nome: '+3 níveis a todos os personagens do seu time atual', imagem: 'assets/images/+3.png', chance: 10, levelup: 3),
-    Recompensa(nome: '+2 níveis a todos os personagens do seu time atual', imagem: 'assets/images/+2.png', chance: 30, levelup: 2),
-    Recompensa(nome: '+1 nível a todos os personagens do seu time atual', imagem: 'assets/images/+1.png', chance: 60, levelup: 1),
+    Recompensa(nome: '+3 pontos!!!', imagem: 'assets/images/+3.png', chance: 10, levelup: 3),
+    Recompensa(nome: '+2 pontos!', imagem: 'assets/images/+2.png', chance: 30, levelup: 2),
+    Recompensa(nome: '+1 ponto', imagem: 'assets/images/+1.png', chance: 60, levelup: 1),
   ];
 
   Recompensa? sortear(List<Recompensa> recompensas) {
@@ -50,9 +48,7 @@ class _TelaRecompensasState extends State<TelaRecompensas> {
 
     final colorScheme = Theme.of(context).colorScheme;
 
-    personagens = context.watch<PersonagensRepository>();
-
-    recompensaAtual?.darRecompensa(personagens.listaObtidos);
+    userInfo = context.watch<UserInfoRepository>();
 
     return Scaffold(
       appBar: AppBar(
@@ -87,12 +83,21 @@ class _TelaRecompensasState extends State<TelaRecompensas> {
                       ),
                     ),
                     Text(
-                      'Você ganhou ${recompensaAtual.nome}!',
+                      'Você ganhou ${recompensaAtual.nome}! Agora você pode distribuir do jeito que voce quiser entre seus personagens na aba de "Personagens"',
                       style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.normal,
-                        color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.white,
                       ),
+                      textAlign: TextAlign.center, // Centraliza o texto
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context, 1);
+                        recompensaAtual.darRecompensa(userInfo);
+                      },
+                      child: Text('Coletar recompensas'),
                     ),
                   ],
                 ),
@@ -120,13 +125,7 @@ class Recompensa {
     required this.levelup,
   });
 
-  void darRecompensa(UnmodifiableListView<Personagem> personagens){
-    if (levelup != 0){
-      for (var personagem in personagens){
-        if (personagem.checado == true){
-          personagem.nivel += levelup;
-        }
-      }
-    }
+  void darRecompensa(UserInfoRepository userInfo){
+    userInfo.adicionarPontos(levelup);
   }
 }
