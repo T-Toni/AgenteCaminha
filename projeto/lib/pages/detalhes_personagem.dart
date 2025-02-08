@@ -21,7 +21,8 @@ class _DetalhesPersonagemScreenState extends State<DetalhesPersonagemScreen> {
   // Calcula o total de pontos distribuídos
   int get pontosDistribuidos =>
       widget.personagem.vida +
-      widget.personagem.dano +
+      widget.personagem.danoMax +
+      widget.personagem.danoMin +
       widget.personagem.velocidade;
 
   // Verifica se ainda há pontos disponíveis para distribuir
@@ -88,11 +89,11 @@ class _DetalhesPersonagemScreenState extends State<DetalhesPersonagemScreen> {
               const SizedBox(height: 30),
               CaracteristicaItem(
                 titulo: "Vida",
-                valor: widget.personagem.vida,
+                valor: widget.personagem.vida.toString(),
                 podeAdicionar: podeAdicionarPontos,
                 onIncrement: () {
                   setState(() {
-                    widget.personagem.vida++;
+                    widget.personagem.vida = widget.personagem.vida + 50; // QUANTIDADE DE VIDA ADICIONADA
                     widget.personagem.nivel++;
                     userInfo.removerPontos(1);
                   });
@@ -100,11 +101,12 @@ class _DetalhesPersonagemScreenState extends State<DetalhesPersonagemScreen> {
               ),
               CaracteristicaItem(
                 titulo: "Dano",
-                valor: widget.personagem.dano,
+                valor: "${widget.personagem.danoMin} - ${widget.personagem.danoMax}",
                 podeAdicionar: podeAdicionarPontos,
                 onIncrement: () {
                   setState(() {
-                    widget.personagem.dano++;
+                    widget.personagem.danoMax = widget.personagem.danoMax + 10; // QUANTIDADE DE DANO MINIMO ADICIONADA
+                    widget.personagem.danoMin = widget.personagem.danoMin + 1;  // QUANTIDADE DE DANO MAXIMO ADICIONADA
                     widget.personagem.nivel++;
                     userInfo.removerPontos(1);
                   });
@@ -112,11 +114,11 @@ class _DetalhesPersonagemScreenState extends State<DetalhesPersonagemScreen> {
               ),
               CaracteristicaItem(
                 titulo: "Velocidade",
-                valor: widget.personagem.velocidade,
+                valor: widget.personagem.velocidade.toString(),
                 podeAdicionar: podeAdicionarPontos,
                 onIncrement: () {
                   setState(() {
-                    widget.personagem.velocidade++;
+                    widget.personagem.velocidade = widget.personagem.velocidade + 5;   // QUANTIDADE DE DANO ADICIONADA
                     widget.personagem.nivel++;
                     userInfo.removerPontos(1);
                   });
@@ -132,7 +134,7 @@ class _DetalhesPersonagemScreenState extends State<DetalhesPersonagemScreen> {
 
 class CaracteristicaItem extends StatelessWidget {
   final String titulo;
-  final int valor;
+  final String valor;
   final VoidCallback onIncrement;
   final bool podeAdicionar; // Novo parâmetro para controlar a exibição do botão
 

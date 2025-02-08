@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto/models/personagem.dart';
 import 'package:projeto/pages/detalhes_personagem.dart';
@@ -16,6 +15,8 @@ class _PersonagensState extends State<Personagens> {
 
   late PersonagensRepository personagens;
   late UserInfoRepository userInfo;
+
+  int personagensSelecionados = 0;
 
   CheckboxListTile LI(Personagem personagem, ColorScheme colorScheme)
   {
@@ -62,19 +63,34 @@ class _PersonagensState extends State<Personagens> {
     ),
       value: personagem.checado,
       onChanged: (bool? newValue) {
-        personagem.checado = newValue!; // Atualiza o estado do personagem específicos
-        personagens.saveAll([personagem]);  // Salva os personagens escolhidos no "repositorio" de personagens escolhidos
+        personagensSelecionados = personagens.getPersonagensEscolhidos().length;
+        
+        if (newValue == true && personagensSelecionados >= 3) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Você só pode selecionar até 3 personagens.'),
+            ),
+          );
+          return;
+        }
+
+        setState(() {
+          personagem.checado = newValue!;
+          if (newValue) {
+            personagensSelecionados++;
+          } else {
+            personagensSelecionados--;
+          }
+        });
+
+        personagens.saveAll([personagem]);
         personagens.salvarPersonagemNoFirebase([personagem]);
-
-        // TESTE ADICIONAR O PERSONAGEM NOVO A LISTA DE OBTIDOS
-        //var value = 4;
-        //personagens.obterPersonagem('$value');
-
       },
       //activeColor: colorScheme.primary,
       //checkColor: colorScheme.primary,
       //tileColor: colorScheme.primary,
-      //subtitle: Text(''),
+      subtitle: Text('HP: ${personagem.vida*50}       DMG: ${personagem.danoMin}-${personagem.danoMin}        VEL: ${personagem.velocidade}'),
     );
   }
 
@@ -106,6 +122,17 @@ class _PersonagensState extends State<Personagens> {
             children: personagens.listaObtidos
               .map((personagem) => LI(personagem, colorScheme))
               .toList(),
+          ),
+        ),
+        if (personagens.lista.isEmpty == false)
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ElevatedButton(
+            onPressed: () {
+              final randomPersonagem = personagens.getPersonagemRandomNaoObtido();
+              personagens.obterPersonagem(randomPersonagem.id.toString());
+            },
+            child: Text(personagens.lista.map((personagem) => personagem.nome).join(', ')),
           ),
         ),
       ],

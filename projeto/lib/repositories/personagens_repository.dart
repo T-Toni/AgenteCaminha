@@ -1,16 +1,13 @@
 import 'dart:collection';
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto/models/personagem.dart';
+import 'package:http/http.dart' as http;
 
 class PersonagensRepository extends ChangeNotifier {
-  final List<Personagem> _lista = [
-    Personagem(id: '1', nome: 'Guerreiro', imagem: 'assets/images/guerreiro.png', posicao: 0, vida: 0, dano: 0, velocidade: 0),
-    Personagem(id: '2', nome: 'Curandeira', imagem: 'assets/images/curandeira.png', posicao: 0, vida: 0, dano: 0, velocidade: 0),
-    Personagem(id: '3', nome: 'Mago', imagem: 'assets/images/mago.png', posicao: 0, vida: 0, dano: 0, velocidade: 0),
-    //Personagem(id: '4', nome: 'padre', imagem: 'assets/images/padre.png', posicao: 0, vida: 0, dano: 0, velocidade: 0),
-  ];
+  final List<Personagem> _lista = []; // essa lista agora é atualizada pela requisição http da mock api
 
   final List<Personagem> _listaObtidos = [];
 
@@ -18,18 +15,47 @@ class PersonagensRepository extends ChangeNotifier {
   late final FirebaseAuth _auth = FirebaseAuth.instance;
 
   UnmodifiableListView<Personagem> get lista => UnmodifiableListView(_lista);
+
   UnmodifiableListView<Personagem> get listaObtidos => UnmodifiableListView(_listaObtidos);
 
-  PersonagensRepository(){
-    carregarPersonagens().then((personagens){
-      saveAll(personagens);
-    });
+  PersonagensRepository();
+
+  Future<void> init() async{
+    clear();
+
+    await fetchTodosPersonagens(); // carrega todos os personagens da api
+
+    List<Personagem> personagens = await carregarPersonagens();
+    saveAll(personagens);
+
+    shaveList(); // varre a lista (remove os personagens já obtidos da lista principal trazida da api)
+
     notifyListeners();
   }
 
   void obterPersonagem(String id){
-    Personagem personagemNovo = lista.where((p) => p.id == id).first;
-    saveAll([personagemNovo]);
+    try {
+      if (_lista.isEmpty) {
+        throw Exception("Lista de personagens ainda não carregada!");
+      }
+
+      Personagem personagemNovo = _lista.firstWhere((p) => p.id == id, orElse: () => throw Exception("Personagem não encontrado"));
+      
+      saveAll([personagemNovo]);
+      shaveList();
+      salvarPersonagemNoFirebase([personagemNovo]);
+    } catch (e) {
+      print("Erro ao obter personagem: $e");
+    }
+  }
+
+  Personagem getPersonagemRandomNaoObtido(){
+    return (_lista..shuffle()).first;
+  }
+
+  void clear(){
+    _lista.clear();
+    _listaObtidos.clear();
   }
 
   // Função para salvar todos os personagens na lista
@@ -37,12 +63,6 @@ class PersonagensRepository extends ChangeNotifier {
     for (var personagem in personagens) {
       if (!_listaObtidos.contains(personagem)) _listaObtidos.add(personagem);
     }
-    notifyListeners();
-  }
-
-  // Função para remover personagem da lista
-  void remove(Personagem personagem) {
-    _listaObtidos.remove(personagem);
     notifyListeners();
   }
 
@@ -67,7 +87,8 @@ class PersonagensRepository extends ChangeNotifier {
           'posicao': personagem.posicao,
           'checado' : personagem.checado,
           'vida' : personagem.vida,
-          'dano' : personagem.dano,
+          'danoMin' : personagem.danoMin,
+          'danoMax' : personagem.danoMax,
           'velocidade' : personagem.velocidade,
           'nivel' : personagem.nivel,
         });
@@ -94,7 +115,8 @@ class PersonagensRepository extends ChangeNotifier {
           posicao: data['posicao'] ?? 0,
           checado: data['checado'] ?? false,
           vida: data['vida'] ?? 0,
-          dano: data['dano'] ?? 0,
+          danoMin: data['danoMin'] ?? 0,
+          danoMax: data['danoMax'] ?? 0,
           velocidade: data['velocidade'] ?? 0,
           nivel: data['nivel'] ?? 1,
         );
@@ -109,7 +131,7 @@ class PersonagensRepository extends ChangeNotifier {
   List<Personagem> getPersonagensEscolhidos(){
     List<Personagem> personagensEscolhidos = [];
 
-    for (Personagem personagem in listaObtidos){
+    for (Personagem personagem in _listaObtidos){
       if (personagem.checado == true){
         personagensEscolhidos.add(personagem);
       }
@@ -117,4 +139,25 @@ class PersonagensRepository extends ChangeNotifier {
     
     return personagensEscolhidos;
   }
+
+  Future<void> fetchTodosPersonagens() async {
+    const String url = 'https://67a78303203008941f67ce34.mockapi.io/personagens';
+
+    final response = await http.get(Uri.parse(url));
+    
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      List<Personagem> personagens  = data.map((json) => Personagem.fromJson(json)).toList();
+      _lista.addAll(personagens);
+      notifyListeners();
+    } else {
+      throw Exception('Falha ao carregar personagens');
+    }
+
+  }
+
+  void shaveList() {
+    _lista.removeWhere((personagem) => _listaObtidos.any((p) => p.id == personagem.id));
+  }
+
 }

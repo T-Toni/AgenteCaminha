@@ -77,33 +77,6 @@ class _LoginScreenState extends State<LoginScreen>{
                     if (formKey.currentState!.validate()){
                       login();
                     }
-                    /*
-                    // Captura os valores dos campos de texto
-                    String username = _usernameController.text;
-                    String password = _passwordController.text;
-
-                    if (username == ""|| password == "") 
-                    {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Preencha todos os campos.')),
-                      );
-                    }
-                    else
-                    {
-                      //verificar se o login existe
-                      bool sucesso = usuarios.validaUsuario(username, password);
-
-                      if (sucesso){
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => const Menu(title: 'AgenteCaminha')), // tira a tela de login e substitui pela tela do jogo em si
-                        );
-                      }else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Login falhou! Tente novamente.')),
-                        );
-                      }
-                      */
                   },
                   child: const Text('Entrar'),
                 ),

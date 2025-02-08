@@ -3,6 +3,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:projeto/pages/home.dart';
 import 'package:projeto/pages/luta.dart';
 import 'package:projeto/pages/personagens_lista.dart';
+import 'package:projeto/repositories/personagens_repository.dart';
+import 'package:projeto/repositories/user_info_repository.dart';
 import 'package:projeto/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +24,12 @@ class _MenuState extends State<Menu> {
   void initState() {
     super.initState();
     _checkLocationService();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<UserInfoRepository>().init();
+      context.read<PersonagensRepository>().init(); // inicia os valores da api e da base de dados
+    });                                                   // tem q ser aqui caso so troque de usuario e nao saia do app
   }
+
   Future<void> _checkLocationService() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -85,7 +92,7 @@ class _MenuState extends State<Menu> {
   
   @override
   Widget build(BuildContext context) {
-    //usuarios = context.watch<UsuariosRepository>();
+
     return Scaffold( //tela
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,

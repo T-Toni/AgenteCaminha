@@ -9,8 +9,16 @@ class UserInfoRepository extends ChangeNotifier {
   late FirebaseFirestore db = FirebaseFirestore.instance;
   late final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  UserInfoRepository(){
+  UserInfoRepository();
+
+  void init(){
+    clear();
     carregarQntPontos();
+  }
+
+  void clear(){
+    nome = '';
+    qntPontos = 0;
   }
 
   void adicionarPontos(int pontos){

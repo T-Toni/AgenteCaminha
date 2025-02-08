@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:projeto/models/personagem.dart';
@@ -146,7 +144,7 @@ class _HomeState extends State<Home> {
             caminhoPercorrido.last,
             roadType: RoadType.foot,
             roadOption: RoadOption(
-              roadColor: Color.fromARGB(255, Random().nextInt(256), Random().nextInt(256), Random().nextInt(256)),
+              roadColor: Colors.deepPurple, //colorido legal Color.fromARGB(255, Random().nextInt(256), Random().nextInt(256), Random().nextInt(256)),
               roadWidth: 10,
             ),
         );
@@ -173,7 +171,7 @@ class _HomeState extends State<Home> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Posiciona a grid no final da tela
       children: [
         Container(
-          height: 250,
+          height: 500, // tamanho do mapa
           child: OSMFlutter( 
             controller: mapController,
             osmOption: OSMOption(
@@ -209,7 +207,7 @@ class _HomeState extends State<Home> {
         Center(
           child: 
           Text(widget.caminhandoNotifier.value?
-            '${kmcaminhados.toStringAsFixed(3)} Km caminhados' : 'Aquecendo para a caminhada...',
+            '${kmcaminhados.toStringAsFixed(1)} Km caminhados' : 'Aquecendo para a caminhada...',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -234,9 +232,6 @@ class _HomeState extends State<Home> {
                 mapController.clearAllRoads();
                 if(mounted){
                   setState(() {
-                    caminhoPercorrido.clear();
-                    kmcaminhados = 0.0;
-                    ultimaPosicao = null;
                     positionStream?.cancel();
                   });
                 }
@@ -279,40 +274,40 @@ class _HomeState extends State<Home> {
             },
           )
         ),
-        Container(
-          height: 250, // Altura da grid 3 linhas
-          padding: const EdgeInsets.all(8.0),
-          color: const Color.fromARGB(0, 224, 224, 224),
-          child: GridView.builder(
-            physics: const NeverScrollableScrollPhysics(), // Desativa o scroll
-            itemCount: 15, // 5x3 = 15 blocos
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 5, // 5 colunas de lado a lado
-              mainAxisSpacing: 8.0,
-              crossAxisSpacing: 8.0,
-            ),
-            itemBuilder: (context, index) {
-              final personagemDisplay = getPersonagemNaPosicao(index, personagensEscolhidos);
-              return GestureDetector(
-                onTap: () => (personagemDisplay != null && marcado == null)
-                          ? marcarPersonagem(personagemDisplay, index)
-                          : trocarPosicao(index), // Altera o estado ao clicar
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: estadosGrid[index] == 0 ? Colors.white : const Color.fromARGB(255, 140, 68, 255),
-                    borderRadius: BorderRadius.circular(8),
-                    image: personagemDisplay != null
-                          ? DecorationImage(
-                              image: AssetImage(personagemDisplay.imagem),
-                              fit: BoxFit.cover,
-                            )
-                          : null, // Aplica a imagem do personagem, se houver
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
+        // Container(
+        //   height: 250, // Altura da grid 3 linhas
+        //   padding: const EdgeInsets.all(8.0),
+        //   color: const Color.fromARGB(0, 224, 224, 224),
+        //   child: GridView.builder(
+        //     physics: const NeverScrollableScrollPhysics(), // Desativa o scroll
+        //     itemCount: 15, // 5x3 = 15 blocos
+        //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        //       crossAxisCount: 5, // 5 colunas de lado a lado
+        //       mainAxisSpacing: 8.0,
+        //       crossAxisSpacing: 8.0,
+        //     ),
+        //     itemBuilder: (context, index) {
+        //       final personagemDisplay = getPersonagemNaPosicao(index, personagensEscolhidos);
+        //       return GestureDetector(
+        //         onTap: () => (personagemDisplay != null && marcado == null)
+        //                   ? marcarPersonagem(personagemDisplay, index)
+        //                   : trocarPosicao(index), // Altera o estado ao clicar
+        //         child: Container(
+        //           decoration: BoxDecoration(
+        //             color: estadosGrid[index] == 0 ? Colors.white : const Color.fromARGB(255, 140, 68, 255),
+        //             borderRadius: BorderRadius.circular(8),
+        //             image: personagemDisplay != null
+        //                   ? DecorationImage(
+        //                       image: AssetImage(personagemDisplay.imagem),
+        //                       fit: BoxFit.cover,
+        //                     )
+        //                   : null, // Aplica a imagem do personagem, se houver
+        //           ),
+        //         ),
+        //       );
+        //     },
+        //   ),
+        // ),
       ],
     );
   }
