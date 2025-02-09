@@ -84,6 +84,7 @@ class PersonagensRepository extends ChangeNotifier {
           'id': personagem.id,
           'nome': personagem.nome,
           'imagem': personagem.imagem,
+          'classe': personagem.classe,
           'posicao': personagem.posicao,
           'checado' : personagem.checado,
           'vida' : personagem.vida,
@@ -111,7 +112,8 @@ class PersonagensRepository extends ChangeNotifier {
         return Personagem(
           id: data['id'] ?? '',
           nome: data['nome'] ?? '',
-          imagem: data['imagem'] ?? '',
+          imagem: data['imagem'] ?? 'assets/images/guerreiro.png',
+          classe: data['classe'] ?? 'ally',
           posicao: data['posicao'] ?? 0,
           checado: data['checado'] ?? false,
           vida: data['vida'] ?? 0,

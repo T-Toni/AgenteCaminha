@@ -93,7 +93,7 @@ class _DetalhesPersonagemScreenState extends State<DetalhesPersonagemScreen> {
                 podeAdicionar: podeAdicionarPontos,
                 onIncrement: () {
                   setState(() {
-                    widget.personagem.vida = widget.personagem.vida + 50; // QUANTIDADE DE VIDA ADICIONADA
+                    widget.personagem.vida = widget.personagem.vida; // QUANTIDADE DE VIDA ADICIONADA
                     widget.personagem.nivel++;
                     userInfo.removerPontos(1);
                   });
@@ -105,8 +105,8 @@ class _DetalhesPersonagemScreenState extends State<DetalhesPersonagemScreen> {
                 podeAdicionar: podeAdicionarPontos,
                 onIncrement: () {
                   setState(() {
-                    widget.personagem.danoMax = widget.personagem.danoMax + 10; // QUANTIDADE DE DANO MINIMO ADICIONADA
-                    widget.personagem.danoMin = widget.personagem.danoMin + 1;  // QUANTIDADE DE DANO MAXIMO ADICIONADA
+                    widget.personagem.danoMax = widget.personagem.danoMax; // QUANTIDADE DE DANO MINIMO ADICIONADA
+                    widget.personagem.danoMin = widget.personagem.danoMin;  // QUANTIDADE DE DANO MAXIMO ADICIONADA
                     widget.personagem.nivel++;
                     userInfo.removerPontos(1);
                   });
@@ -118,7 +118,7 @@ class _DetalhesPersonagemScreenState extends State<DetalhesPersonagemScreen> {
                 podeAdicionar: podeAdicionarPontos,
                 onIncrement: () {
                   setState(() {
-                    widget.personagem.velocidade = widget.personagem.velocidade + 5;   // QUANTIDADE DE DANO ADICIONADA
+                    widget.personagem.velocidade = widget.personagem.velocidade;   // QUANTIDADE DE DANO ADICIONADA
                     widget.personagem.nivel++;
                     userInfo.removerPontos(1);
                   });
