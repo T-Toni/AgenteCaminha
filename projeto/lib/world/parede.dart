@@ -4,7 +4,7 @@ import 'package:flame/components.dart';
 class Parede extends PositionComponent {
   
   Parede({required size, required position})  :super(size: size, position: position) { 
-    //debugMode = true;
+    debugMode = true;
   }
 
   @override

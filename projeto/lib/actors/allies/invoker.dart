@@ -54,7 +54,7 @@ class Invoker extends Ally{
 
     // Timer para invocar aliados a cada 5 segundos
     invocacaoTimer = TimerComponent(
-      period: 25,
+      period: cooldown.toDouble(),
       repeat: true,
       onTick: () => invocarAlly(),
     );
@@ -65,10 +65,12 @@ class Invoker extends Ally{
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
 
+    /*
     if (other is Enemy) {
       Ataque ataque = Ataque();
       ataque.ataque(this, other);
     }
+    */
   }
 
   void invocarAlly() async {
@@ -84,7 +86,7 @@ class Invoker extends Ally{
     speed: 100,
     direction: Vector2(200, 200),
     min_dano: 5,
-    max_dano: 20,
+    max_dano: 20, // Ajustar
     vida: 25,
     min_acerto: 1,
     max_acerto: 10,

@@ -38,7 +38,8 @@ class _LutaState extends State<Luta> {
                     title: Text('Combate'),
                     ),
                     body: Center(
-                    child: GameWidget(game: Combategame(personagens: personagens.getPersonagensEscolhidos())),
+                    child: GameWidget(
+                      game: Combategame(personagens: personagens.getPersonagensEscolhidos())),
                     ),
                   ),
                   ),

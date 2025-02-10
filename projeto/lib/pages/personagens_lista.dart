@@ -90,7 +90,7 @@ class _PersonagensState extends State<Personagens> {
       //activeColor: colorScheme.primary,
       //checkColor: colorScheme.primary,
       //tileColor: colorScheme.primary,
-      subtitle: Text('HP: ${personagem.vida*50}       DMG: ${personagem.danoMin}-${personagem.danoMax*10}        VEL: ${personagem.velocidade*5}'),
+      subtitle: Text('HP: ${personagem.vida*50}       DMG: ${personagem.danoMin}-${personagem.danoMax*10}        VEL: ${personagem.velocidade}'),
     );
   }
 
