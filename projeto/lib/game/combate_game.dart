@@ -153,15 +153,30 @@ class Combategame extends FlameGame with HasCollisionDetection {
           vida: p.vida * 50, // *50 seria um multiplicador de vida padrão
           min_acerto: 1,
           max_acerto: 10,
+          persegue: true,
         );
         aliados.add(ally);
         aliadosHeal.add(ally);
-        await add(
-            ally
-            ..sprite = await loadSprite(p.imagem.replaceFirst('assets/images/', ''))
-            ..size = Vector2.all(24 * ajuste * 1.5)
-            ..position = Vector2(150, 400), // Mudando posição para evitar colisão
-        );
+
+        if(p.nome == "Guerreiro")
+            {
+              await add(
+                ally
+                ..sprite = await loadSprite(p.imagem.replaceFirst('assets/images/', ''))
+                ..size = Vector2.all(24 * ajuste * 1.5)
+                ..position = Vector2(100, 400),
+                );
+            }
+            else
+            {
+              await add(
+                ally
+                ..sprite = await loadSprite(p.imagem.replaceFirst('assets/images/', ''))
+                ..size = Vector2.all(24 * ajuste * 1.5)
+                ..position = Vector2(200, 400),
+                ); // Mudando posição para evitar colisão
+            }
+  
       } else if (p.classe == 'healer') {
         Healer healer = Healer(
           speed: 20,

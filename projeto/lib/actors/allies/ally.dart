@@ -1,3 +1,4 @@
+//import 'dart:ffi';
 import 'dart:math';
 import 'package:projeto/attacks/attack.dart';
 import 'package:projeto/game/combate_game.dart';
@@ -29,6 +30,8 @@ class Ally extends SpriteComponent with CollisionCallbacks, HasGameRef<Combatega
   double tempoDeLuta = 2;
   double valor_tempoDeLuta = 2;
 
+  bool persegue = false;
+
   late Enemy adversario;
 
   late TextComponent vidaText;
@@ -42,6 +45,7 @@ class Ally extends SpriteComponent with CollisionCallbacks, HasGameRef<Combatega
     required this.vida,
     required this.min_acerto,
     required this.max_acerto,
+    required this.persegue
   }) : super();
 
   @override
@@ -79,7 +83,6 @@ class Ally extends SpriteComponent with CollisionCallbacks, HasGameRef<Combatega
   @override
   void onMount() {
     super.onMount();
-    // Agora o componente está montado e pode acessar gameRef
     escolherNovoCaminho();
   }
 
@@ -107,65 +110,148 @@ class Ally extends SpriteComponent with CollisionCallbacks, HasGameRef<Combatega
     }
   }
 
+  void escolherNovoCaminho() {
+    direction = Vector2(
+      Random().nextDouble() * gameRef.size.x,
+      Random().nextDouble() * gameRef.size.y,
+    );
+  }
+
   @override
   void update(double dt) {
-    // Atualiza a vida
-    if (!isLoaded) return;
 
-    if (lutando) {
-      vidaText.text = '$vida ⚔️';
-    } else {
-      vidaText.text = '$vida';
+    bool adversarioInitialized = false;
+    try {
+      adversario;
+      adversarioInitialized = true;
+      if (adversario.vida <= 0) {
+        lutando = false;
+        adversarioInitialized = false;
+      }
+    } catch (e) {
+      adversarioInitialized = false;
     }
-    vidaText.position = Vector2(size.x / 2, this.width / 10);
+    
+    //MOVIMENTO ALEATORIO
+    if (!persegue || !adversarioInitialized)
+      {
+      // Atualiza a vida
+      if (!isLoaded) return;
 
-    if (!lutando) {
-      Vector2 displacement = direction - position;
-      double distance = displacement.length;
+      if (lutando) {
+        vidaText.text = '$vida ⚔️';
+      } else {
+        vidaText.text = '$vida';
+      }
+      vidaText.position = Vector2(size.x / 2, this.width / 10);
 
-      colidiu = c_dir || c_esq || c_cima || c_baixo;
+      if (!lutando) {
+        Vector2 displacement = direction - position;
+        double distance = displacement.length;
 
-      if (distance > 0) {
-        Vector2 normalizedDirection = displacement / distance;
-        double maxStep = speed * dt;
-        if (maxStep > distance) maxStep = distance;
+        colidiu = c_dir || c_esq || c_cima || c_baixo;
 
-        // Confere as colisões com a parede
-        if (c_dir && normalizedDirection.x > 0) normalizedDirection.x = 0;
-        if (c_esq && normalizedDirection.x < 0) normalizedDirection.x = 0;
-        if (c_baixo && normalizedDirection.y > 0) normalizedDirection.y = 0;
-        if (c_cima && normalizedDirection.y < 0) normalizedDirection.y = 0;
+        if (distance > 0) {
+          Vector2 normalizedDirection = displacement / distance;
+          double maxStep = speed * dt;
+          if (maxStep > distance) maxStep = distance;
 
-        c_dir = c_esq = c_baixo = c_cima = false;
-        position += normalizedDirection * maxStep;
+          // Confere as colisões com a parede
+          if (c_dir && normalizedDirection.x > 0) normalizedDirection.x = 0;
+          if (c_esq && normalizedDirection.x < 0) normalizedDirection.x = 0;
+          if (c_baixo && normalizedDirection.y > 0) normalizedDirection.y = 0;
+          if (c_cima && normalizedDirection.y < 0) normalizedDirection.y = 0;
 
-        if (colidiu) {
+          c_dir = c_esq = c_baixo = c_cima = false;
+          position += normalizedDirection * maxStep;
+
+          if (colidiu) {
+            escolherNovoCaminho();
+          }
+        } else {
           escolherNovoCaminho();
         }
       } else {
-        escolherNovoCaminho();
-      }
-    } else {
-      // Fica parado por um tempo e depois executa o ataque
-      tempoDeLuta -= dt;
-      if (tempoDeLuta <= 0) {
-        Ataque ataque = Ataque();
-        ataque.ataque(this, adversario);
-        tempoDeLuta = valor_tempoDeLuta;
-      }
+        // Fica parado por um tempo e depois executa o ataque
+        tempoDeLuta -= dt;
+        if (tempoDeLuta <= 0) {
+          Ataque ataque = Ataque();
+          ataque.ataque(this, adversario);
+          tempoDeLuta = valor_tempoDeLuta;
+        }
 
-      if (sendoEmpurrado) {
-        // Executa o knockback
-        if (c_dir && knockbackVelocity.x > 0) knockbackVelocity.x = 0;
-        if (c_esq && knockbackVelocity.x < 0) knockbackVelocity.x = 0;
-        if (c_baixo && knockbackVelocity.y > 0) knockbackVelocity.y = 0;
-        if (c_cima && knockbackVelocity.y < 0) knockbackVelocity.y = 0;
+        if (sendoEmpurrado) {
+          // Executa o knockback
+          if (c_dir && knockbackVelocity.x > 0) knockbackVelocity.x = 0;
+          if (c_esq && knockbackVelocity.x < 0) knockbackVelocity.x = 0;
+          if (c_baixo && knockbackVelocity.y > 0) knockbackVelocity.y = 0;
+          if (c_cima && knockbackVelocity.y < 0) knockbackVelocity.y = 0;
 
-        position += knockbackVelocity * dt;
-        knockbackVelocity *= knockbackDecay;
-        if (knockbackVelocity.length < 0.1) {
-          sendoEmpurrado = false;
-          lutando = false;
+          position += knockbackVelocity * dt;
+          knockbackVelocity *= knockbackDecay;
+          if (knockbackVelocity.length < 0.1) {
+            sendoEmpurrado = false;
+            lutando = false;
+          }
+        }
+      }
+    }
+    else //SEGUE O INIMIGO
+    {
+
+      // Atualiza a vida
+      if (!isLoaded) return;
+
+      if (lutando) {
+        vidaText.text = '$vida ⚔️';
+      } else {
+        vidaText.text = '$vida';
+      }
+      vidaText.position = Vector2(size.x / 2, this.width / 10);
+
+      if (!lutando) {
+        Vector2 displacement = adversario.position - position;
+        double distance = displacement.length;
+
+        colidiu = c_dir || c_esq || c_cima || c_baixo;
+
+        if (distance > 0) {
+          Vector2 normalizedDirection = displacement / distance;
+          double maxStep = speed * dt;
+          if (maxStep > distance) maxStep = distance;
+
+          // Confere as colisões com a parede
+          if (c_dir && normalizedDirection.x > 0) normalizedDirection.x = 0;
+          if (c_esq && normalizedDirection.x < 0) normalizedDirection.x = 0;
+          if (c_baixo && normalizedDirection.y > 0) normalizedDirection.y = 0;
+          if (c_cima && normalizedDirection.y < 0) normalizedDirection.y = 0;
+
+          c_dir = c_esq = c_baixo = c_cima = false;
+          position += normalizedDirection * maxStep;
+        }
+
+      } else {
+        // Fica parado por um tempo e depois executa o ataque
+        tempoDeLuta -= dt;
+        if (tempoDeLuta <= 0) {
+          Ataque ataque = Ataque();
+          ataque.ataque(this, adversario);
+          tempoDeLuta = valor_tempoDeLuta;
+        }
+
+        if (sendoEmpurrado) {
+          // Executa o knockback
+          if (c_dir && knockbackVelocity.x > 0) knockbackVelocity.x = 0;
+          if (c_esq && knockbackVelocity.x < 0) knockbackVelocity.x = 0;
+          if (c_baixo && knockbackVelocity.y > 0) knockbackVelocity.y = 0;
+          if (c_cima && knockbackVelocity.y < 0) knockbackVelocity.y = 0;
+
+          position += knockbackVelocity * dt;
+          knockbackVelocity *= knockbackDecay;
+          if (knockbackVelocity.length < 0.1) {
+            sendoEmpurrado = false;
+            lutando = false;
+          }
         }
       }
     }
@@ -174,13 +260,6 @@ class Ally extends SpriteComponent with CollisionCallbacks, HasGameRef<Combatega
   void knockback(Vector2 collisionNormal, double force) {
     knockbackVelocity = collisionNormal.normalized() * force;
     sendoEmpurrado = true;
-  }
-
-  void escolherNovoCaminho() {
-    direction = Vector2(
-      Random().nextDouble() * gameRef.size.x,
-      Random().nextDouble() * gameRef.size.y,
-    );
   }
 
   void apanha(int dano) {

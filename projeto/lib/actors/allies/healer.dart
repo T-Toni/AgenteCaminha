@@ -54,6 +54,7 @@ class Healer extends Ally {
           vida: 10000,
           min_acerto: 1,
           max_acerto: 10,
+          persegue: false,
         ) {
     //debugMode = true;
   }

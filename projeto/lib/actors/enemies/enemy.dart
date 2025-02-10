@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:projeto/actors/allies/ally.dart';
 import 'package:projeto/game/combate_game.dart';
 import 'package:projeto/world/parede.dart';
 import 'package:flame/collisions.dart';
@@ -32,6 +33,8 @@ class Enemy extends SpriteComponent
 
   double tempoDeLuta = 2;
   double valor_tempoDeLuta = 2;
+
+  late Ally adversario;
 
   late TextComponent vidaText;
   late TextComponent lutandoText;

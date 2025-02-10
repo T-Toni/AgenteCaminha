@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 //import 'package:flutter/material.dart';
-import 'package:projeto/actors/enemies/enemy.dart';
-import 'package:projeto/attacks/attack.dart';
+//import 'package:projeto/actors/enemies/enemy.dart';
+//import 'package:projeto/attacks/attack.dart';
 import 'package:projeto/actors/allies/ally.dart';
 
 class Invoker extends Ally{
@@ -35,13 +35,14 @@ class Invoker extends Ally{
     required this.iframe,
     required this.ajuste,
   }) : super(
-          speed: 0, // Invoker não se move
+          speed: 1, // Invoker não se move
           direction: Vector2.zero(), // Sem direção, pois é fixo
           min_dano: min_dano,
           max_dano: max_dano,
           vida: vida,
           min_acerto: min_acerto,
           max_acerto: max_acerto,
+          persegue: false,
         ) {
     //debugMode = true;
   }
@@ -90,6 +91,7 @@ class Invoker extends Ally{
     vida: 25,
     min_acerto: 1,
     max_acerto: 10,
+    persegue: true,
   );
 
   parent!.add(
